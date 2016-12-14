@@ -1,23 +1,40 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="PercentChangeTextStyle">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">#FFF</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="BidPriceTextStyle">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/secondaryText</item>
+        <item name="android:layout_marginLeft">@dimen/material_small_margin</item>
+        <item name="android:layout_marginRight">@dimen/material_small_margin</item>
+    </style>
+
+    <style name="StockNameTextStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/secondaryText</item>
+        <item name="android:layout_marginLeft">@dimen/material_margin</item>
+        <item name="android:layout_marginRight">@dimen/material_margin</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="StockSymbolTextStyle">
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:layout_marginLeft">@dimen/material_margin</item>
+        <item name="android:layout_marginRight">@dimen/material_margin</item>
     </style>
+
+
 </resources>

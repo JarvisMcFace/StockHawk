@@ -1,3 +1,8 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
+
+
+    <dimen name="material_margin">16dp</dimen>
+    <dimen name="material_small_margin">8dp</dimen>
+    <dimen name="list_item_two_line_height">72dp</dimen>
 </resources>

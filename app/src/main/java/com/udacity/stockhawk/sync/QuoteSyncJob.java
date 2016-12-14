@@ -66,15 +66,15 @@ public final class QuoteSyncJob {
 
             Timber.d(quotes.toString());
 
-            ArrayList<ContentValues> quoteCVs = new ArrayList<>();
+            ArrayList<ContentValues> quoteContentValues = new ArrayList<>();
 
             while (iterator.hasNext()) {
-                String symbol = iterator.next();
+                String stockSymbol = iterator.next();
 
-
-                Stock stock = quotes.get(symbol);
+                Stock stock = quotes.get(stockSymbol);
                 StockQuote quote = stock.getQuote();
 
+                final String stockName = stock.getName();
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
                 float percentChange = quote.getChangeInPercent().floatValue();
@@ -93,22 +93,21 @@ public final class QuoteSyncJob {
                 }
 
                 ContentValues quoteCV = new ContentValues();
-                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
+                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, stockSymbol);
                 quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
                 quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-
                 quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+                quoteCV.put(Contract.Quote.COLUMN_NAME,stockName);
 
-                quoteCVs.add(quoteCV);
+                quoteContentValues.add(quoteCV);
 
             }
 
             context.getContentResolver()
                     .bulkInsert(
                             Contract.Quote.URI,
-                            quoteCVs.toArray(new ContentValues[quoteCVs.size()]));
+                            quoteContentValues.toArray(new ContentValues[quoteContentValues.size()]));
 
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
