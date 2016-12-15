@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -18,22 +20,31 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.data.PreferencesUtils;
+import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import util.SymbolLookup;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
-        StockAdapter.StockAdapterOnClickHandler {
+        StockAdapter.StockAdapterOnClickHandler,
+        CallbackWeakReference {
 
     private static final int STOCK_LOADER = 0;
+    private View rootView;
+
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.toolbar)
@@ -42,9 +53,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView stockRecyclerView;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
-//    @BindView(R.id.error)
+    //    @BindView(R.id.error)
 //    TextView error;
     private StockAdapter adapter;
+    private String stockSymbol;
 
     @Override
     public void onClick(String symbol) {
@@ -55,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rootView = findViewById(R.id.coordinator);
+
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -80,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
-                PrefUtils.removeStock(MainActivity.this, symbol);
-                getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
+                PreferencesUtils.removeStock(MainActivity.this, symbol);
+                getContentResolver().delete(QuoteContract.Quote.makeUriForStock(symbol), null, null);
             }
         }).attachToRecyclerView(stockRecyclerView);
 
@@ -108,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else if (!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
-        } else if (PrefUtils.getStocks(this).size() == 0) {
+        } else if (PreferencesUtils.getStocks(this).size() == 0) {
             Timber.d("WHYAREWEHERE");
             swipeRefreshLayout.setRefreshing(false);
 //            error.setText(getString(R.string.error_no_stocks));
@@ -118,9 +132,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    public void button(View view) {
-        new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
+    public void addStockButton(View view) {
+//        new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
+        new MaterialDialog.Builder(this)
+                .title(R.string.dialog_title)
+                .customView(R.layout.add_stock_dialog, true)
+                .positiveText(R.string.dialog_add)
+                .negativeText(R.string.dialog_cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        EditText symbol = (EditText) dialog.getView().findViewById(R.id.dialog_stock);
+                        stockSymbol = symbol.getText().toString().trim();
+
+                        lookupStock();
+                    }
+                })
+                .show();
     }
+
 
     void addStock(String symbol) {
         if (symbol != null && !symbol.isEmpty()) {
@@ -132,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
 
-            PrefUtils.addStock(this, symbol);
+            PreferencesUtils.addStock(this, symbol);
             QuoteSyncJob.syncImmediately(this);
         }
     }
@@ -140,9 +170,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
-                Contract.Quote.URI,
-                Contract.Quote.QUOTE_COLUMNS,
-                null, null, Contract.Quote.COLUMN_SYMBOL);
+                QuoteContract.Quote.URI,
+                QuoteContract.Quote.QUOTE_COLUMNS,
+                null, null, QuoteContract.Quote.COLUMN_SYMBOL);
     }
 
     @Override
@@ -166,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     private void setDisplayModeMenuItemIcon(MenuItem item) {
-        if (PrefUtils.getDisplayMode(this)
+        if (PreferencesUtils.getDisplayMode(this)
                 .equals(getString(R.string.pref_display_mode_absolute_key))) {
             item.setIcon(R.drawable.ic_percentage);
         } else {
@@ -187,11 +217,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int id = item.getItemId();
 
         if (id == R.id.action_change_units) {
-            PrefUtils.toggleDisplayMode(this);
+            PreferencesUtils.toggleDisplayMode(this);
             setDisplayModeMenuItemIcon(item);
             adapter.notifyDataSetChanged();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void lookupStock() {
+        WeakReference<CallbackWeakReference> callbackWeakReference = new WeakReference<CallbackWeakReference>(this);
+        SymbolLookup symbolLookup = new SymbolLookup(callbackWeakReference);
+        symbolLookup.execute(stockSymbol);
+    }
+
+    @Override
+    public void symbolAvailable(Boolean isAvailable) {
+        if (isAvailable) {
+            addStock(stockSymbol);
+        } else {
+            String errorMessage = getString(R.string.symbol_not_available, stockSymbol);
+            Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_SHORT).show();
+        }
+
     }
 }

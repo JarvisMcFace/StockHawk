@@ -21,8 +21,8 @@ public class StockProvider extends ContentProvider {
 
     static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        matcher.addURI(Contract.AUTHORITY, Contract.PATH_QUOTE, QUOTE);
-        matcher.addURI(Contract.AUTHORITY, Contract.PATH_QUOTE_WITH_SYMBOL, QUOTE_FOR_SYMBOL);
+        matcher.addURI(QuoteContract.AUTHORITY, QuoteContract.PATH_QUOTE, QUOTE);
+        matcher.addURI(QuoteContract.AUTHORITY, QuoteContract.PATH_QUOTE_WITH_SYMBOL, QUOTE_FOR_SYMBOL);
         return matcher;
     }
 
@@ -42,7 +42,7 @@ public class StockProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case QUOTE:
                 returnCursor = db.query(
-                        Contract.Quote.TABLE_NAME,
+                        QuoteContract.Quote.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -54,10 +54,10 @@ public class StockProvider extends ContentProvider {
 
             case QUOTE_FOR_SYMBOL:
                 returnCursor = db.query(
-                        Contract.Quote.TABLE_NAME,
+                        QuoteContract.Quote.TABLE_NAME,
                         projection,
-                        Contract.Quote.COLUMN_SYMBOL + " = ?",
-                        new String[]{Contract.Quote.getStockFromUri(uri)},
+                        QuoteContract.Quote.COLUMN_SYMBOL + " = ?",
+                        new String[]{QuoteContract.Quote.getStockFromUri(uri)},
                         null,
                         null,
                         sortOrder
@@ -88,11 +88,11 @@ public class StockProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case QUOTE:
                 db.insert(
-                        Contract.Quote.TABLE_NAME,
+                        QuoteContract.Quote.TABLE_NAME,
                         null,
                         values
                 );
-                returnUri = Contract.Quote.URI;
+                returnUri = QuoteContract.Quote.URI;
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown URI:" + uri);
@@ -114,7 +114,7 @@ public class StockProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case QUOTE:
                 rowsDeleted = db.delete(
-                        Contract.Quote.TABLE_NAME,
+                        QuoteContract.Quote.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
@@ -122,10 +122,10 @@ public class StockProvider extends ContentProvider {
                 break;
 
             case QUOTE_FOR_SYMBOL:
-                String symbol = Contract.Quote.getStockFromUri(uri);
+                String symbol = QuoteContract.Quote.getStockFromUri(uri);
                 rowsDeleted = db.delete(
-                        Contract.Quote.TABLE_NAME,
-                        '"' + symbol + '"' + " =" + Contract.Quote.COLUMN_SYMBOL,
+                        QuoteContract.Quote.TABLE_NAME,
+                        '"' + symbol + '"' + " =" + QuoteContract.Quote.COLUMN_SYMBOL,
                         selectionArgs
                 );
                 break;
@@ -156,7 +156,7 @@ public class StockProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         db.insert(
-                                Contract.Quote.TABLE_NAME,
+                                QuoteContract.Quote.TABLE_NAME,
                                 null,
                                 value
                         );

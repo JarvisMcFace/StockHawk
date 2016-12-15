@@ -4,14 +4,14 @@ package com.udacity.stockhawk.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public final class Contract {
+public final class QuoteContract {
 
     static final String AUTHORITY = "com.udacity.stockhawk";
     static final String PATH_QUOTE = "quote";
     static final String PATH_QUOTE_WITH_SYMBOL = "quote/*";
     private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 
-    private Contract() {
+    private QuoteContract() {
     }
 
     public static final class Quote implements BaseColumns {

@@ -9,8 +9,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.data.QuoteContract;
+import com.udacity.stockhawk.data.PreferencesUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public final class QuoteSyncJob {
 
         try {
 
-            Set<String> stockPref = PrefUtils.getStocks(context);
+            Set<String> stockPref = PreferencesUtils.getStocks(context);
             Set<String> stockCopy = new HashSet<>();
             stockCopy.addAll(stockPref);
             String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
@@ -74,6 +74,9 @@ public final class QuoteSyncJob {
                 Stock stock = quotes.get(stockSymbol);
                 StockQuote quote = stock.getQuote();
 
+                if (quote.getPrice() == null){
+                    continue;
+                }
                 final String stockName = stock.getName();
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
@@ -93,12 +96,12 @@ public final class QuoteSyncJob {
                 }
 
                 ContentValues quoteCV = new ContentValues();
-                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, stockSymbol);
-                quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
-                quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-                quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
-                quoteCV.put(Contract.Quote.COLUMN_NAME,stockName);
+                quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
+                quoteCV.put(QuoteContract.Quote.COLUMN_PRICE, price);
+                quoteCV.put(QuoteContract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
+                quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
+                quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+                quoteCV.put(QuoteContract.Quote.COLUMN_NAME,stockName);
 
                 quoteContentValues.add(quoteCV);
 
@@ -106,7 +109,7 @@ public final class QuoteSyncJob {
 
             context.getContentResolver()
                     .bulkInsert(
-                            Contract.Quote.URI,
+                            QuoteContract.Quote.URI,
                             quoteContentValues.toArray(new ContentValues[quoteContentValues.size()]));
 
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);

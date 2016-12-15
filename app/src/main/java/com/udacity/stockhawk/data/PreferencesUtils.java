@@ -10,9 +10,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class PrefUtils {
+public final class PreferencesUtils {
 
-    private PrefUtils() {
+    private PreferencesUtils() {
     }
 
     public static Set<String> getStocks(Context context) {
