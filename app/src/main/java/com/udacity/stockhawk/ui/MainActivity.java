@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -35,6 +36,7 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import util.StringUtils;
 import util.SymbolLookup;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
@@ -53,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView stockRecyclerView;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
-    //    @BindView(R.id.error)
-//    TextView error;
+        @BindView(R.id.error)
+        TextView error;
     private StockAdapter adapter;
     private String stockSymbol;
 
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         EditText symbol = (EditText) dialog.getView().findViewById(R.id.dialog_stock);
                         stockSymbol = symbol.getText().toString().trim();
-
+                        swipeRefreshLayout.setRefreshing(true);
                         lookupStock();
                     }
                 })
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     void addStock(String symbol) {
-        if (symbol != null && !symbol.isEmpty()) {
+        if (StringUtils.isNotEmpty(symbol)) {
 
             if (networkUp()) {
                 swipeRefreshLayout.setRefreshing(true);
@@ -161,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
-
             PreferencesUtils.addStock(this, symbol);
             QuoteSyncJob.syncImmediately(this);
         }
@@ -233,9 +234,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void symbolAvailable(Boolean isAvailable) {
+
         if (isAvailable) {
             addStock(stockSymbol);
         } else {
+            swipeRefreshLayout.setRefreshing(false);
             String errorMessage = getString(R.string.symbol_not_available, stockSymbol);
             Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_SHORT).show();
         }
