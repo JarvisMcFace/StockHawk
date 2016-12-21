@@ -78,6 +78,7 @@ public final class QuoteSyncJob {
                 if (quote.getPrice() == null){
                     continue;
                 }
+                final String currency = stock.getCurrency();
                 final String stockName = stock.getName();
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
@@ -86,7 +87,12 @@ public final class QuoteSyncJob {
                 // WARNING! Don't request historical data for a stock that doesn't exist!
                 // The request will hang forever X_x
                 List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
-                String stockHistoryJson = new Gson().toJson(history);
+                Gson gson = new Gson();
+                String stockHistoryJson = gson.toJson(history);
+                String dividends = gson.toJson(stock.getDividend());
+                String stats = gson.toJson(stock.getStats());
+
+
 
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
@@ -95,6 +101,9 @@ public final class QuoteSyncJob {
                 quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
                 quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, stockHistoryJson.toString());
                 quoteCV.put(QuoteContract.Quote.COLUMN_NAME,stockName);
+                quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND,dividends);
+                quoteCV.put(QuoteContract.Quote.COLUMN_STATS,stats);
+                quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY,currency);
 
                 quoteContentValues.add(quoteCV);
 

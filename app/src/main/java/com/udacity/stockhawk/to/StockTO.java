@@ -11,19 +11,25 @@ public class StockTO implements Serializable {
     private static final long serialVersionUID = 287067544004875999L;
 
     private String symbol;
+    private String currency;
     private String name;
     private float price;
     private float change;
     private float percentChange;
     private List<StockHistoryTO> history;
+    private StockDividendTO stockDividendTO;
+    private StockStatsTO stockStatsTO;
 
-    public StockTO(String name, String symbol, float price, float absoluteChange, float percentChange, List<StockHistoryTO> history) {
+    public StockTO(String name, String symbol, float price, float absoluteChange, float percentChange, List<StockHistoryTO> history, StockDividendTO dividendTO, StockStatsTO statsTO, String currency) {
         this.name = name;
         this.symbol = symbol;
         this.price = price;
         this.change = absoluteChange;
         this.percentChange = percentChange;
         this.history = history;
+        this.stockDividendTO = dividendTO;
+        this.stockStatsTO = statsTO;
+        this.currency = currency;
     }
 
     public String getSymbol() {
@@ -72,5 +78,21 @@ public class StockTO implements Serializable {
 
     public void setHistory(List<StockHistoryTO> history) {
         this.history = history;
+    }
+
+    public StockDividendTO getStockDividendTO() {
+        return stockDividendTO;
+    }
+
+    public void setStockDividendTO(StockDividendTO stockDividendTO) {
+        this.stockDividendTO = stockDividendTO;
+    }
+
+    public StockStatsTO getStockStatsTO() {
+        return stockStatsTO;
+    }
+
+    public void setStockStatsTO(StockStatsTO stockStatsTO) {
+        this.stockStatsTO = stockStatsTO;
     }
 }

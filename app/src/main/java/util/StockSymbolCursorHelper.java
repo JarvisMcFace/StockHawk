@@ -6,7 +6,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.fragment.StockDetailsFragment;
+import com.udacity.stockhawk.to.StockDividendTO;
 import com.udacity.stockhawk.to.StockHistoryTO;
+import com.udacity.stockhawk.to.StockStatsTO;
 import com.udacity.stockhawk.to.StockTO;
 
 import java.util.ArrayList;
@@ -45,10 +47,16 @@ public class StockSymbolCursorHelper {
             float absoluteChange = Float.parseFloat(cursor.getString(QuoteContract.Quote.POSITION_ABSOLUTE_CHANGE));
             float percentChange = Float.parseFloat(cursor.getString(QuoteContract.Quote.POSITION_PERCENTAGE_CHANGE));
             String history = cursor.getString(QuoteContract.Quote.POSITION_HISTORY);
+            String dividend = cursor.getString(QuoteContract.Quote.POSITION_DIVIDEND);
+            String stats = cursor.getString(QuoteContract.Quote.POSITION_STATS);
+            String currency = cursor.getString(QuoteContract.Quote.POSITION_CURRENCY);
 
             Gson gson = new Gson();
-            List<StockHistoryTO> stockHistoryTOs = gson.fromJson(history,ArrayList.class);
-            StockTO stockTO = new StockTO(name, symbol, price, absoluteChange, percentChange, stockHistoryTOs);
+            List<StockHistoryTO> stockHistoryTOs = gson.fromJson(history, ArrayList.class);
+            StockDividendTO dividendTO = gson.fromJson(dividend, StockDividendTO.class);
+            StockStatsTO statsTO = gson.fromJson(stats, StockStatsTO.class);
+
+            StockTO stockTO = new StockTO(name, symbol, price, absoluteChange, percentChange, stockHistoryTOs, dividendTO, statsTO, currency);
 
             return stockTO;
 
