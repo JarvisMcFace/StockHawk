@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -27,8 +28,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.activity.StockDetailsActivity;
 import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
+import com.udacity.stockhawk.fragment.StockDetailsFragment;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 import java.lang.ref.WeakReference;
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
+        Intent intent = new Intent(this, StockDetailsActivity.class);
+        intent.putExtra(StockDetailsFragment.STOCK_SYMBOL, symbol);
+        startActivity(intent);
     }
 
     @Override

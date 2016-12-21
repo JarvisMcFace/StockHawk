@@ -9,8 +9,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.udacity.stockhawk.data.QuoteContract;
+import com.google.gson.Gson;
 import com.udacity.stockhawk.data.PreferencesUtils;
+import com.udacity.stockhawk.data.QuoteContract;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,22 +86,14 @@ public final class QuoteSyncJob {
                 // WARNING! Don't request historical data for a stock that doesn't exist!
                 // The request will hang forever X_x
                 List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
-
-                StringBuilder historyBuilder = new StringBuilder();
-
-                for (HistoricalQuote it : history) {
-                    historyBuilder.append(it.getDate().getTimeInMillis());
-                    historyBuilder.append(", ");
-                    historyBuilder.append(it.getClose());
-                    historyBuilder.append("\n");
-                }
+                String stockHistoryJson = new Gson().toJson(history);
 
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
                 quoteCV.put(QuoteContract.Quote.COLUMN_PRICE, price);
                 quoteCV.put(QuoteContract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-                quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+                quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, stockHistoryJson.toString());
                 quoteCV.put(QuoteContract.Quote.COLUMN_NAME,stockName);
 
                 quoteContentValues.add(quoteCV);

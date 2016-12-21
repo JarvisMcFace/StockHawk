@@ -22,6 +22,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.StockDetailsActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/stock_details_title_activity"/>
+
         <service
             android:name=".sync.QuoteIntentService"
             android:exported="false" />
