@@ -3,6 +3,7 @@ package com.udacity.stockhawk.fragment;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,9 +14,9 @@ import android.view.ViewGroup;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.QuoteContract;
+import com.udacity.stockhawk.databinding.FragmentStockDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
 
-import butterknife.ButterKnife;
 import util.StockSymbolCursorHelper;
 
 import static android.content.ContentValues.TAG;
@@ -29,12 +30,13 @@ public class StockDetailsFragment extends Fragment {
     private View rootView;
     private String symbol;
     private StockTO stockTO;
+    private FragmentStockDetailsBinding fragmentStockDetailsBinding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_stock_details, container, false);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+        fragmentStockDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_stock_details, null, false);
+        return fragmentStockDetailsBinding.getRoot();
+
     }
 
     @Override
@@ -59,6 +61,7 @@ public class StockDetailsFragment extends Fragment {
             cursor.close();
         }
 
+        fragmentStockDetailsBinding.setStockInfo(stockTO);
         Log.d(TAG, "David: " + "onActivityCreated() called with: savedInstanceState = [" + savedInstanceState + "]");
     }
 

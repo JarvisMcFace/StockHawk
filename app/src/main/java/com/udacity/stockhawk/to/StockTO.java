@@ -88,6 +88,14 @@ public class StockTO implements Serializable {
         this.stockDividendTO = stockDividendTO;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     public StockStatsTO getStockStatsTO() {
         return stockStatsTO;
     }
