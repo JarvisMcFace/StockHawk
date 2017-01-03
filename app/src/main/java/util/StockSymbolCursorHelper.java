@@ -4,15 +4,18 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.fragment.StockDetailsFragment;
 import com.udacity.stockhawk.to.StockDividendTO;
-import com.udacity.stockhawk.to.StockHistoryTO;
 import com.udacity.stockhawk.to.StockStatsTO;
 import com.udacity.stockhawk.to.StockTO;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.List;
+
+import yahoofinance.histquotes.HistoricalQuote;
+
 
 /**
  * Created by David on 11/7/16.
@@ -52,7 +55,8 @@ public class StockSymbolCursorHelper {
             String currency = cursor.getString(QuoteContract.Quote.POSITION_CURRENCY);
 
             Gson gson = new Gson();
-            List<StockHistoryTO> stockHistoryTOs = gson.fromJson(history, ArrayList.class);
+            Type listOfTestObject = new TypeToken<List<HistoricalQuote>>() {}.getType();
+            List<HistoricalQuote> stockHistoryTOs = gson.fromJson(history, listOfTestObject);
             StockDividendTO dividendTO = gson.fromJson(dividend, StockDividendTO.class);
             StockStatsTO statsTO = gson.fromJson(stats, StockStatsTO.class);
 
