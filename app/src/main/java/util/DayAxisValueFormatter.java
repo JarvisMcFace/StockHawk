@@ -1,71 +1,48 @@
 package util;
 
+import android.util.Log;
+
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import yahoofinance.histquotes.HistoricalQuote;
+
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by philipp on 02/06/16.
  */
-public class DayAxisValueFormatter implements IAxisValueFormatter
-{
+public class DayAxisValueFormatter implements IAxisValueFormatter {
 
-    protected String[] mMonths = new String[]{
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
-    };
 
     private BarLineChartBase<?> chart;
+    private List<HistoricalQuote> historicalQuotes;
 
-    public DayAxisValueFormatter(BarLineChartBase<?> chart) {
+    public DayAxisValueFormatter(BarLineChartBase<?> chart, List<HistoricalQuote> historicalQuotes) {
         this.chart = chart;
+        this.historicalQuotes = historicalQuotes;
     }
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
 
-        int days = (int) value;
 
-        int year = determineYear(days);
+        Date data = new Date();
 
-        int month = determineMonth(days);
-        String monthName = mMonths[month % mMonths.length];
-        String yearName = String.valueOf(year);
+        int index = (int) value;
 
-        if (chart.getVisibleXRange() > 30 * 6) {
+        Calendar transactionCalendar = historicalQuotes.get(index).getDate();
 
-            return monthName + " " + yearName;
-        } else {
+        SimpleDateFormat formatDate = new SimpleDateFormat("MMMM d yyyy");
+        Log.d(TAG, "David: "  + " : " + formatDate.format(transactionCalendar.getTime()));
 
-            int dayOfMonth = determineDayOfMonth(days, month + 12 * (year - 2016));
-
-            String appendix = "th";
-
-            switch (dayOfMonth) {
-                case 1:
-                    appendix = "st";
-                    break;
-                case 2:
-                    appendix = "nd";
-                    break;
-                case 3:
-                    appendix = "rd";
-                    break;
-                case 21:
-                    appendix = "st";
-                    break;
-                case 22:
-                    appendix = "nd";
-                    break;
-                case 23:
-                    appendix = "rd";
-                    break;
-                case 31:
-                    appendix = "st";
-                    break;
-            }
-
-            return dayOfMonth == 0 ? "" : dayOfMonth + appendix + " " + monthName;
-        }
+        return formatDate.format(transactionCalendar.getTime());
     }
 
     private int getDaysForMonth(int month, int year) {

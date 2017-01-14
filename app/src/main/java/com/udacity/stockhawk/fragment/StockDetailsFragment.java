@@ -16,10 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -30,12 +27,11 @@ import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.databinding.FragmentStockDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import util.DayAxisValueFormatter;
 import util.StockSymbolCursorHelper;
 import yahoofinance.histquotes.HistoricalQuote;
 
@@ -102,11 +98,11 @@ public class StockDetailsFragment extends Fragment {
         float minClosePrice = getMinClosePrice(historicalQuotes);
 
 
-        for (HistoricalQuote historicalQuote : historicalQuotes) {
-            Calendar transactionCalendar = historicalQuote.getDate();
-            SimpleDateFormat formatDate = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
-            Log.d(TAG, "David: " + historicalQuote.getClose() + " : " + formatDate.format(transactionCalendar.getTime()));
-        }
+//        for (HistoricalQuote historicalQuote : historicalQuotes) {
+//            Calendar transactionCalendar = historicalQuote.getDate();
+//            SimpleDateFormat formatDate = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
+//            Log.d(TAG, "David: " + historicalQuote.getClose() + " : " + formatDate.format(transactionCalendar.getTime()));
+//        }
 
         fragmentStockDetailsBinding.chart.setDescription(null);
         fragmentStockDetailsBinding.chart.setDrawGridBackground(false);
@@ -129,21 +125,22 @@ public class StockDetailsFragment extends Fragment {
         // mChart.setBackgroundColor(Color.GRAY);
 
         // x-axis limit line
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
-        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
+//        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+//        llXAxis.setLineWidth(4f);
+//        llXAxis.enableDashedLine(10f, 10f, 0f);
+//        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+//        llXAxis.setTextSize(10f);
 
-        XAxis xAxis =  fragmentStockDetailsBinding.chart.getXAxis();
-        xAxis.enableGridDashedLine(10f, 10f, 0f);
-        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
+        XAxis xAxis = fragmentStockDetailsBinding.chart.getXAxis();
+//        xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setValueFormatter(new DayAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes));
+        xAxis.setLabelRotationAngle(5f);
         //xAxis.addLimitLine(llXAxis); // add x-axis limit line
 
-        LimitLine ll1 = new LimitLine(maxClosePrice, "Max Close");
-        ll1.setLineWidth(1f);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
+//        LimitLine ll1 = new LimitLine(maxClosePrice, "Max Close");
+//        ll1.setLineWidth(1f);
+//        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+//        ll1.setTextSize(10f);
 
 //        LimitLine ll2 = new LimitLine(minClosePrice, "Lower Limit");
 //        ll2.setLineWidth(4f);
@@ -151,20 +148,20 @@ public class StockDetailsFragment extends Fragment {
 //        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
 //        ll2.setTextSize(10f);
 
-        YAxis leftAxis =  fragmentStockDetailsBinding.chart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.addLimitLine(ll1);
-
-        leftAxis.setSpaceTop(25l);
-        float adjustedMaxiumnClosePrice = maxClosePrice * 1.05f;
-        leftAxis.setAxisMaximum(adjustedMaxiumnClosePrice);
-        leftAxis.setAxisMinimum(minClosePrice);
-        //leftAxis.setYOffset(20f);
-        leftAxis.enableGridDashedLine(10f, 10f, 0f);
-        leftAxis.setDrawZeroLine(false);
+//        YAxis leftAxis = fragmentStockDetailsBinding.chart.getAxisLeft();
+//        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+//        leftAxis.addLimitLine(ll1);
+//
+//        leftAxis.setSpaceTop(25l);
+//        float adjustedMaxiumnClosePrice = maxClosePrice * 1.05f;
+//        leftAxis.setAxisMaximum(adjustedMaxiumnClosePrice);
+//        leftAxis.setAxisMinimum(minClosePrice);
+//        //leftAxis.setYOffset(20f);
+//        leftAxis.enableGridDashedLine(10f, 10f, 0f);
+//        leftAxis.setDrawZeroLine(false);
 
         // limit lines are drawn behind data (and not on top)
-        leftAxis.setDrawLimitLinesBehindData(true);
+        //   leftAxis.setDrawLimitLinesBehindData(true);
 
         fragmentStockDetailsBinding.chart.getAxisRight().setEnabled(false);
 
@@ -178,14 +175,14 @@ public class StockDetailsFragment extends Fragment {
 //        mChart.setVisibleYRange(20f, AxisDependency.LEFT);
 //        mChart.centerViewTo(20, 50, AxisDependency.LEFT);
 
-        fragmentStockDetailsBinding.chart.animateX(2500);
+//        fragmentStockDetailsBinding.chart.animateX(2500);
         //mChart.invalidate();
 
         // get the legend (only possible after setting data)
-        Legend l =  fragmentStockDetailsBinding.chart.getLegend();
+//        Legend l = fragmentStockDetailsBinding.chart.getLegend();
 
         // modify the legend ...
-        l.setForm(Legend.LegendForm.LINE);
+//        l.setForm(Legend.LegendForm.LINE);
 
         // // dont forget to refresh the drawing
         // mChart.invalidate();
@@ -196,8 +193,7 @@ public class StockDetailsFragment extends Fragment {
         ArrayList<Entry> values = new ArrayList<Entry>();
 
         for (int i = 0; i < historicalQuotes.size(); i++) {
-            HistoricalQuote  historicalQuote = historicalQuotes.get(i);
-
+            HistoricalQuote historicalQuote = historicalQuotes.get(i);
             float val = historicalQuote.getClose().floatValue();
             values.add(new Entry(i, val));
         }
@@ -206,7 +202,7 @@ public class StockDetailsFragment extends Fragment {
 
         if (fragmentStockDetailsBinding.chart.getData() != null &&
                 fragmentStockDetailsBinding.chart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet)fragmentStockDetailsBinding.chart.getData().getDataSetByIndex(0);
+            set1 = (LineDataSet) fragmentStockDetailsBinding.chart.getData().getDataSetByIndex(0);
             set1.setValues(values);
             fragmentStockDetailsBinding.chart.getData().notifyDataChanged();
             fragmentStockDetailsBinding.chart.notifyDataSetChanged();
@@ -232,8 +228,7 @@ public class StockDetailsFragment extends Fragment {
                 // fill drawable only supported on api level 18 and above
                 Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fade_red);
                 set1.setFillDrawable(drawable);
-            }
-            else {
+            } else {
                 set1.setFillColor(Color.BLACK);
             }
 
