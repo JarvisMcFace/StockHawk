@@ -16,7 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -125,40 +127,41 @@ public class StockDetailsFragment extends Fragment {
         // mChart.setBackgroundColor(Color.GRAY);
 
         // x-axis limit line
-//        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-//        llXAxis.setLineWidth(4f);
-//        llXAxis.enableDashedLine(10f, 10f, 0f);
-//        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-//        llXAxis.setTextSize(10f);
+        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+        llXAxis.setLineWidth(4f);
+        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        llXAxis.setTextSize(10f);
 
         XAxis xAxis = fragmentStockDetailsBinding.chart.getXAxis();
-//        xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.enableGridDashedLine(10f, 10f, 0f);
         xAxis.setValueFormatter(new DayAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes));
-        xAxis.setLabelRotationAngle(5f);
-        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
+        xAxis.setLabelRotationAngle(15f);
+//        xAxis.addLimitLine(llXAxis); // add x-axis limit line
+  //      xAxis.setAvoidFirstLastClipping(true);
 
-//        LimitLine ll1 = new LimitLine(maxClosePrice, "Max Close");
-//        ll1.setLineWidth(1f);
-//        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-//        ll1.setTextSize(10f);
 
-//        LimitLine ll2 = new LimitLine(minClosePrice, "Lower Limit");
-//        ll2.setLineWidth(4f);
-//        ll2.enableDashedLine(10f, 10f, 0f);
-//        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-//        ll2.setTextSize(10f);
+        LimitLine ll1 = new LimitLine(maxClosePrice, "Max Close");
+        ll1.setLineWidth(1f);
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        ll1.setTextSize(10f);
 
-//        YAxis leftAxis = fragmentStockDetailsBinding.chart.getAxisLeft();
-//        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-//        leftAxis.addLimitLine(ll1);
-//
-//        leftAxis.setSpaceTop(25l);
-//        float adjustedMaxiumnClosePrice = maxClosePrice * 1.05f;
-//        leftAxis.setAxisMaximum(adjustedMaxiumnClosePrice);
-//        leftAxis.setAxisMinimum(minClosePrice);
-//        //leftAxis.setYOffset(20f);
-//        leftAxis.enableGridDashedLine(10f, 10f, 0f);
-//        leftAxis.setDrawZeroLine(false);
+        LimitLine ll2 = new LimitLine(minClosePrice, "Lower Limit");
+        ll2.setLineWidth(4f);
+        ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        ll2.setTextSize(10f);
+
+        YAxis leftAxis = fragmentStockDetailsBinding.chart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+      //  leftAxis.addLimitLine(ll1);
+
+        leftAxis.setSpaceTop(25l);
+        float adjustedMaxiumnClosePrice = maxClosePrice * 1.05f;
+        leftAxis.setAxisMaximum(adjustedMaxiumnClosePrice);
+        leftAxis.setAxisMinimum(minClosePrice);
+        //leftAxis.setYOffset(20f);
+        leftAxis.enableGridDashedLine(10f, 10f, 0f);
+        leftAxis.setDrawZeroLine(false);
 
         // limit lines are drawn behind data (and not on top)
         //   leftAxis.setDrawLimitLinesBehindData(true);
@@ -218,6 +221,7 @@ public class StockDetailsFragment extends Fragment {
             set1.setLineWidth(1f);
             set1.setCircleRadius(3f);
             set1.setDrawCircleHole(false);
+
             set1.setValueTextSize(9f);
             set1.setDrawFilled(true);
             set1.setFormLineWidth(1f);
