@@ -29,12 +29,15 @@ import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.databinding.FragmentStockDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import util.DayAxisValueFormatter;
+import util.CurrencyAmountAxisValueFormatter;
 import util.StockSymbolCursorHelper;
+import util.WeeksDateAxisValueFormatter;
 import yahoofinance.histquotes.HistoricalQuote;
 
 import static android.content.ContentValues.TAG;
@@ -100,31 +103,16 @@ public class StockDetailsFragment extends Fragment {
         float minClosePrice = getMinClosePrice(historicalQuotes);
 
 
-//        for (HistoricalQuote historicalQuote : historicalQuotes) {
-//            Calendar transactionCalendar = historicalQuote.getDate();
-//            SimpleDateFormat formatDate = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
-//            Log.d(TAG, "David: " + historicalQuote.getClose() + " : " + formatDate.format(transactionCalendar.getTime()));
-//        }
-
         fragmentStockDetailsBinding.chart.setDescription(null);
         fragmentStockDetailsBinding.chart.setDrawGridBackground(false);
-        // no description text
-//        fragmentStockDetailsBinding.chart.getDescription().setEnabled(false);
-
-        // enable touch gestures
         fragmentStockDetailsBinding.chart.setTouchEnabled(true);
-
-        // enable scaling and dragging
         fragmentStockDetailsBinding.chart.setDragEnabled(true);
-        fragmentStockDetailsBinding.chart.setScaleEnabled(true);
-        // mChart.setScaleXEnabled(true);
-        // mChart.setScaleYEnabled(true);
+        fragmentStockDetailsBinding.chart.setScaleEnabled(false);
+        fragmentStockDetailsBinding.chart.setScaleXEnabled(true);
+        fragmentStockDetailsBinding.chart.setScaleYEnabled(false);
+        fragmentStockDetailsBinding.chart.getAxisRight().setEnabled(false);
+        fragmentStockDetailsBinding.chart.setPinchZoom(false);
 
-        // if disabled, scaling can be done on x- and y-axis separately
-        fragmentStockDetailsBinding.chart.setPinchZoom(true);
-
-        // set an alternative background color
-        // mChart.setBackgroundColor(Color.GRAY);
 
         // x-axis limit line
         LimitLine llXAxis = new LimitLine(10f, "Index 10");
@@ -134,51 +122,34 @@ public class StockDetailsFragment extends Fragment {
 
         XAxis xAxis = fragmentStockDetailsBinding.chart.getXAxis();
         xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setValueFormatter(new DayAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes));
+        xAxis.setValueFormatter(new WeeksDateAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes));
         xAxis.setLabelRotationAngle(15f);
-//        xAxis.addLimitLine(llXAxis); // add x-axis limit line
-  //      xAxis.setAvoidFirstLastClipping(true);
+
+        String maxLineLimeClosePrice = getString(R.string.max_close_price);
+        LimitLine limitLineMax = new LimitLine(maxClosePrice, maxLineLimeClosePrice);
+        limitLineMax.setLineWidth(1f);
+        limitLineMax.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        limitLineMax.setTextSize(8f);
 
 
-        LimitLine ll1 = new LimitLine(maxClosePrice, "Max Close");
-        ll1.setLineWidth(1f);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
+        YAxis axisLeft = fragmentStockDetailsBinding.chart.getAxisLeft();
+        axisLeft.removeAllLimitLines();
+        axisLeft.addLimitLine(limitLineMax);
 
-        LimitLine ll2 = new LimitLine(minClosePrice, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
-
-        YAxis leftAxis = fragmentStockDetailsBinding.chart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-      //  leftAxis.addLimitLine(ll1);
-
-        leftAxis.setSpaceTop(25l);
+        axisLeft.setSpaceTop(25l);
         float adjustedMaxiumnClosePrice = maxClosePrice * 1.05f;
-        leftAxis.setAxisMaximum(adjustedMaxiumnClosePrice);
-        leftAxis.setAxisMinimum(minClosePrice);
-        //leftAxis.setYOffset(20f);
-        leftAxis.enableGridDashedLine(10f, 10f, 0f);
-        leftAxis.setDrawZeroLine(false);
-
-        // limit lines are drawn behind data (and not on top)
-        //   leftAxis.setDrawLimitLinesBehindData(true);
-
-        fragmentStockDetailsBinding.chart.getAxisRight().setEnabled(false);
-
-        //mChart.getViewPortHandler().setMaximumScaleY(2f);
-        //mChart.getViewPortHandler().setMaximumScaleX(2f);
+        axisLeft.setAxisMaximum(adjustedMaxiumnClosePrice);
+        axisLeft.setAxisMinimum(minClosePrice - (minClosePrice * .05f));
+        axisLeft.enableGridDashedLine(10f, 10f, 0f);
+        axisLeft.setDrawZeroLine(true);
+        axisLeft.setValueFormatter(new CurrencyAmountAxisValueFormatter());
 
         // add data
         setData(historicalQuotes);
 
-//        mChart.setVisibleXRange(20);
-//        mChart.setVisibleYRange(20f, AxisDependency.LEFT);
-//        mChart.centerViewTo(20, 50, AxisDependency.LEFT);
+        fragmentStockDetailsBinding.chart.setVisibleXRange(10, 20);
 
-//        fragmentStockDetailsBinding.chart.animateX(2500);
+        fragmentStockDetailsBinding.chart.animateX(2500);
         //mChart.invalidate();
 
         // get the legend (only possible after setting data)
@@ -191,6 +162,7 @@ public class StockDetailsFragment extends Fragment {
         // mChart.invalidate();
     }
 
+
     private void setData(List<HistoricalQuote> historicalQuotes) {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
@@ -201,43 +173,48 @@ public class StockDetailsFragment extends Fragment {
             values.add(new Entry(i, val));
         }
 
-        LineDataSet set1;
+        LineDataSet lineDataSet;
 
         if (fragmentStockDetailsBinding.chart.getData() != null &&
                 fragmentStockDetailsBinding.chart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) fragmentStockDetailsBinding.chart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
+            lineDataSet = (LineDataSet) fragmentStockDetailsBinding.chart.getData().getDataSetByIndex(0);
+            lineDataSet.setValues(values);
             fragmentStockDetailsBinding.chart.getData().notifyDataChanged();
             fragmentStockDetailsBinding.chart.notifyDataSetChanged();
         } else {
             // create a dataset and give it a type
-            set1 = new LineDataSet(values, "DataSet 1");
+
+            String earliestDisplayDate = getEarliestDisplayStartDate(historicalQuotes);
+            String latestDisplayDate = getLatestDisplayStartDate(historicalQuotes);
+
+            String dataSetRange = getString(R.string.data_set_range_description, earliestDisplayDate, latestDisplayDate);
+            lineDataSet = new LineDataSet(values, dataSetRange);
 
             // set the line to be drawn like this "- - - - - -"
-            set1.enableDashedLine(10f, 5f, 0f);
-            set1.enableDashedHighlightLine(10f, 5f, 0f);
-            set1.setColor(Color.BLACK);
-            set1.setCircleColor(Color.BLACK);
-            set1.setLineWidth(1f);
-            set1.setCircleRadius(3f);
-            set1.setDrawCircleHole(false);
-
-            set1.setValueTextSize(9f);
-            set1.setDrawFilled(true);
-            set1.setFormLineWidth(1f);
-            set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-            set1.setFormSize(15.f);
+            lineDataSet.enableDashedLine(10f, 5f, 0f);
+            lineDataSet.enableDashedHighlightLine(10f, 5f, 0f);
+            lineDataSet.setColor(Color.BLACK);
+            lineDataSet.setCircleColor(Color.BLACK);
+            lineDataSet.setLineWidth(1f);
+            lineDataSet.setCircleRadius(3f);
+            lineDataSet.setDrawCircleHole(false);
+            lineDataSet.setDrawValues(false);
+            lineDataSet.setValueTextSize(9f);
+            lineDataSet.setDrawFilled(true);
+            lineDataSet.setFormLineWidth(1f);
+            lineDataSet.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+            lineDataSet.setFormSize(15.f);
 
             if (Utils.getSDKInt() >= 18) {
                 // fill drawable only supported on api level 18 and above
                 Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fade_red);
-                set1.setFillDrawable(drawable);
+                lineDataSet.setFillDrawable(drawable);
             } else {
-                set1.setFillColor(Color.BLACK);
+                lineDataSet.setFillColor(Color.BLACK);
             }
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-            dataSets.add(set1); // add the datasets
+            dataSets.add(lineDataSet); // add the datasets
 
             // create a data object with the datasets
             LineData data = new LineData(dataSets);
@@ -260,6 +237,34 @@ public class StockDetailsFragment extends Fragment {
         List<HistoricalQuote> minPriceSearch = new ArrayList<>(historicalQuotes);
         Collections.sort(minPriceSearch, new StockDetailsMaxPriceComparator());
         return minPriceSearch.get(0).getClose().floatValue();
+    }
+
+    private Calendar getLatestCloseCalendarDate(List<HistoricalQuote> historicalQuotes) {
+        List<HistoricalQuote> latestCloseDate = new ArrayList<>(historicalQuotes);
+        Collections.sort(latestCloseDate, new StockDetailsLatestDateComparator());
+        return latestCloseDate.get(0).getDate();
+    }
+
+    private Calendar getEarlistCloseCalendarDate(List<HistoricalQuote> historicalQuotes) {
+        List<HistoricalQuote> earlistCloseDate = new ArrayList<>(historicalQuotes);
+        Collections.sort(earlistCloseDate, new StockDetailsLatestDateComparator());
+        int quoteSize = historicalQuotes.size() - 1;
+        return earlistCloseDate.get(quoteSize).getDate();
+    }
+
+
+    private String getEarliestDisplayStartDate(List<HistoricalQuote> historicalQuotes) {
+        Calendar earliestCalendarDate = getEarlistCloseCalendarDate(historicalQuotes);
+
+        SimpleDateFormat formatDate = new SimpleDateFormat("MMM d, yyyy");
+        return formatDate.format(earliestCalendarDate.getTime());
+    }
+
+    private String getLatestDisplayStartDate(List<HistoricalQuote> historicalQuotes) {
+        Calendar latestCalendarDate = getLatestCloseCalendarDate(historicalQuotes);
+
+        SimpleDateFormat formatDate = new SimpleDateFormat("MMM d, yyyy");
+        return formatDate.format(latestCalendarDate.getTime());
     }
 
 }

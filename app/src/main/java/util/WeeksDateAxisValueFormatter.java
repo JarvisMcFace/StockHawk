@@ -13,13 +13,13 @@ import yahoofinance.histquotes.HistoricalQuote;
 /**
  * @author David
  */
-public class DayAxisValueFormatter implements IAxisValueFormatter {
+public class WeeksDateAxisValueFormatter implements IAxisValueFormatter {
 
 
     private BarLineChartBase<?> chart;
     private List<HistoricalQuote> historicalQuotes;
 
-    public DayAxisValueFormatter(BarLineChartBase<?> chart, List<HistoricalQuote> historicalQuotes) {
+    public WeeksDateAxisValueFormatter(BarLineChartBase<?> chart, List<HistoricalQuote> historicalQuotes) {
         this.chart = chart;
         this.historicalQuotes = historicalQuotes;
     }
