@@ -22,6 +22,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:textDirection="anyRtl"
                 style="@style/Base.TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -31,6 +32,7 @@
                 tools:text="Advanced Micro Devices, Inc." />
 
             <TextView
+                android:textDirection="anyRtl"
                 android:id="@+id/textView"
                 style="@style/Base.TextAppearance.AppCompat.Caption"
                 android:layout_width="wrap_content"
@@ -49,6 +51,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:textDirection="anyRtl"
                 android:id="@+id/stock_price"
                 style="@style/Base.TextAppearance.AppCompat.Large"
                 android:layout_width="wrap_content"
@@ -59,11 +62,13 @@
                 tools:text="11.00" />
 
             <TextView
+                android:textDirection="anyRtl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{stockInfo.currency}"
                 android:textSize="13dp"
                 tools:text="USD" />
+
 
             <ImageView
                 android:id="@+id/price_direction_arrow"
@@ -77,6 +82,7 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
+                android:textDirection="anyRtl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_margin"
@@ -86,6 +92,7 @@
                 tools:text="4.00" />
 
             <TextView
+                android:textDirection="anyRtl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_small_margin"
