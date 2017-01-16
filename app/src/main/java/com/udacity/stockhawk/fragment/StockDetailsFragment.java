@@ -22,12 +22,16 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.databinding.FragmentStockDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
+import com.udacity.stockhawk.ui.XYMarkerView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +49,7 @@ import static android.content.ContentValues.TAG;
 /**
  * Created by David on 12/18/16.
  */
-public class StockDetailsFragment extends Fragment {
+public class StockDetailsFragment extends Fragment implements OnChartValueSelectedListener {
 
     public static final String STOCK_SYMBOL = "com.udacity.stockhawk.fragment.stock.symbol";
     private View rootView;
@@ -95,7 +99,7 @@ public class StockDetailsFragment extends Fragment {
 
     private void populateChart() {
 //        fragmentStockDetailsBinding.chart.setOnChartGestureListener(this);
-//        fragmentStockDetailsBinding.chart.setOnChartValueSelectedListener(this);
+        fragmentStockDetailsBinding.chart.setOnChartValueSelectedListener(this);
 
         List<HistoricalQuote> historicalQuotes = stockTO.getHistory();
 
@@ -113,6 +117,12 @@ public class StockDetailsFragment extends Fragment {
         fragmentStockDetailsBinding.chart.getAxisRight().setEnabled(false);
         fragmentStockDetailsBinding.chart.setPinchZoom(false);
 
+        IAxisValueFormatter xAxisFormatter = new CurrencyAmountAxisValueFormatter();
+        IAxisValueFormatter weekDateAxisValueFormatter = new WeeksDateAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes);
+        XYMarkerView mv = new XYMarkerView(getContext(), historicalQuotes);
+        mv.setChartView(fragmentStockDetailsBinding.chart); // For bounds control
+        fragmentStockDetailsBinding.chart.setMarker(mv); // Set the marker to the chart
+
 
         // x-axis limit line
         LimitLine llXAxis = new LimitLine(10f, "Index 10");
@@ -122,7 +132,7 @@ public class StockDetailsFragment extends Fragment {
 
         XAxis xAxis = fragmentStockDetailsBinding.chart.getXAxis();
         xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setValueFormatter(new WeeksDateAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes));
+        xAxis.setValueFormatter(weekDateAxisValueFormatter);
         xAxis.setLabelRotationAngle(15f);
 
         String maxLineLimeClosePrice = getString(R.string.max_close_price);
@@ -142,7 +152,7 @@ public class StockDetailsFragment extends Fragment {
         axisLeft.setAxisMinimum(minClosePrice - (minClosePrice * .05f));
         axisLeft.enableGridDashedLine(10f, 10f, 0f);
         axisLeft.setDrawZeroLine(true);
-        axisLeft.setValueFormatter(new CurrencyAmountAxisValueFormatter());
+        axisLeft.setValueFormatter(xAxisFormatter);
 
         // add data
         setData(historicalQuotes);
@@ -267,4 +277,14 @@ public class StockDetailsFragment extends Fragment {
         return formatDate.format(latestCalendarDate.getTime());
     }
 
+    @Override
+    public void onValueSelected(Entry entry, Highlight highlight) {
+
+
+    }
+
+    @Override
+    public void onNothingSelected() {
+
+    }
 }

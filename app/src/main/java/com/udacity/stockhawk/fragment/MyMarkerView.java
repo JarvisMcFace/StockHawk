@@ -25,7 +25,7 @@ public class MyMarkerView extends MarkerView {
     public MyMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
 
-        tvContent = (TextView) findViewById(R.id.tvContent);
+        tvContent = (TextView) findViewById(R.id.close_price);
     }
 
     // callbacks everytime the MarkerView is redrawn, can be used to update the

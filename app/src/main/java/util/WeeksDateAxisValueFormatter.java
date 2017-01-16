@@ -28,7 +28,6 @@ public class WeeksDateAxisValueFormatter implements IAxisValueFormatter {
     public String getFormattedValue(float value, AxisBase axis) {
 
         int index = (int) value;
-
         Calendar transactionCalendar = historicalQuotes.get(index).getDate();
         SimpleDateFormat formatDate = new SimpleDateFormat("MMM d, ''yy");
         return formatDate.format(transactionCalendar.getTime());
