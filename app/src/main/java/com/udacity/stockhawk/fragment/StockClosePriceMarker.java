@@ -18,11 +18,11 @@ import com.udacity.stockhawk.R;
  * 
  * @author Philipp Jahoda
  */
-public class MyMarkerView extends MarkerView {
+public class StockClosePriceMarker extends MarkerView {
 
     private TextView tvContent;
 
-    public MyMarkerView(Context context, int layoutResource) {
+    public StockClosePriceMarker(Context context, int layoutResource) {
         super(context, layoutResource);
 
         tvContent = (TextView) findViewById(R.id.close_price);

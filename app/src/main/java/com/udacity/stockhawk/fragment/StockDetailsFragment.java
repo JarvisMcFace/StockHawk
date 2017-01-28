@@ -31,6 +31,8 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.databinding.FragmentStockDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
+import com.udacity.stockhawk.ui.StockDetailsLatestDateComparator;
+import com.udacity.stockhawk.ui.StockDetailsMaxPriceComparator;
 import com.udacity.stockhawk.ui.XYMarkerView;
 
 import java.text.SimpleDateFormat;
@@ -116,6 +118,9 @@ public class StockDetailsFragment extends Fragment implements OnChartValueSelect
         fragmentStockDetailsBinding.chart.setScaleYEnabled(false);
         fragmentStockDetailsBinding.chart.getAxisRight().setEnabled(false);
         fragmentStockDetailsBinding.chart.setPinchZoom(false);
+        fragmentStockDetailsBinding.chart.setVisibleXRange(10, 20);
+        fragmentStockDetailsBinding.chart.animateX(2500);
+
 
         IAxisValueFormatter xAxisFormatter = new CurrencyAmountAxisValueFormatter();
         IAxisValueFormatter weekDateAxisValueFormatter = new WeeksDateAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes);
@@ -157,19 +162,7 @@ public class StockDetailsFragment extends Fragment implements OnChartValueSelect
         // add data
         setData(historicalQuotes);
 
-        fragmentStockDetailsBinding.chart.setVisibleXRange(10, 20);
 
-        fragmentStockDetailsBinding.chart.animateX(2500);
-        //mChart.invalidate();
-
-        // get the legend (only possible after setting data)
-//        Legend l = fragmentStockDetailsBinding.chart.getLegend();
-
-        // modify the legend ...
-//        l.setForm(Legend.LegendForm.LINE);
-
-        // // dont forget to refresh the drawing
-        // mChart.invalidate();
     }
 
 

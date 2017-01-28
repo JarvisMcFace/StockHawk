@@ -1,4 +1,4 @@
-package com.udacity.stockhawk.fragment;
+package com.udacity.stockhawk.ui;
 
 import java.util.Comparator;
 
