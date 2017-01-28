@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.activity.StockDetailsActivity;
+import com.udacity.stockhawk.activity.StockDetailsLandingActivity;
 import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.fragment.StockDetailsFragment;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
-        Intent intent = new Intent(this, StockDetailsActivity.class);
+        Intent intent = new Intent(this, StockDetailsLandingActivity.class);
         intent.putExtra(StockDetailsFragment.STOCK_SYMBOL, symbol);
         startActivity(intent);
     }

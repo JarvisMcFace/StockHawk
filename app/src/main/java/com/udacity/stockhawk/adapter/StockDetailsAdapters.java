@@ -1,4 +1,4 @@
-package com.udacity.stockhawk.fragment;
+package com.udacity.stockhawk.adapter;
 
 import android.content.Context;
 import android.databinding.BindingAdapter;

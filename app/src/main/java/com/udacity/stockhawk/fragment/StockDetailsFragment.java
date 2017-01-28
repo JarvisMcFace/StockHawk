@@ -1,5 +1,6 @@
 package com.udacity.stockhawk.fragment;
 
+import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,7 +10,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,10 +54,14 @@ import static android.content.ContentValues.TAG;
 public class StockDetailsFragment extends Fragment implements OnChartValueSelectedListener {
 
     public static final String STOCK_SYMBOL = "com.udacity.stockhawk.fragment.stock.symbol";
-    private View rootView;
+
     private String symbol;
     private StockTO stockTO;
     private FragmentStockDetailsBinding fragmentStockDetailsBinding;
+
+    public static Fragment newInstance() {
+        return new StockDetailsFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
