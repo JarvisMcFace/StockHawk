@@ -6,7 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.udacity.stockhawk.data.QuoteContract;
-import com.udacity.stockhawk.fragment.StockDetailsFragment;
+import com.udacity.stockhawk.fragment.StockChartDetailsFragment;
 import com.udacity.stockhawk.to.StockDividendTO;
 import com.udacity.stockhawk.to.StockStatsTO;
 import com.udacity.stockhawk.to.StockTO;
@@ -65,7 +65,7 @@ public class StockSymbolCursorHelper {
             return stockTO;
 
         } catch (Exception ex) {
-            Log.d(StockDetailsFragment.class.getSimpleName(), "StockSymbolCursorHelper getStockHistoryTO: ");
+            Log.d(StockChartDetailsFragment.class.getSimpleName(), "StockSymbolCursorHelper getStockHistoryTO: ");
             return null;
         }
     }

@@ -51,7 +51,7 @@ import static android.content.ContentValues.TAG;
 /**
  * Created by David on 12/18/16.
  */
-public class StockDetailsFragment extends Fragment implements OnChartValueSelectedListener {
+public class StockChartDetailsFragment extends Fragment implements OnChartValueSelectedListener {
 
     public static final String STOCK_SYMBOL = "com.udacity.stockhawk.fragment.stock.symbol";
 
@@ -60,7 +60,7 @@ public class StockDetailsFragment extends Fragment implements OnChartValueSelect
     private FragmentStockDetailsBinding fragmentStockDetailsBinding;
 
     public static Fragment newInstance() {
-        return new StockDetailsFragment();
+        return new StockChartDetailsFragment();
     }
 
     @Override

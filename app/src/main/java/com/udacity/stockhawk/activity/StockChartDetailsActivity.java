@@ -10,11 +10,11 @@ import com.udacity.stockhawk.R;
  * Created by David on 12/18/16.
  */
 
-public class StockDetailsActivity extends AppCompatActivity {
+public class StockChartDetailsActivity extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock_details);
+        setContentView(R.layout.activity_stock_chart_details);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
