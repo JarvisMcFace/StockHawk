@@ -33,13 +33,13 @@ import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.fragment.StockChartDetailsFragment;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
-import util.CallbackWeakReference;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import util.CallbackWeakReference;
 import util.StringUtils;
 import util.SymbolLookup;
 
@@ -63,13 +63,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private StockAdapter adapter;
     private String stockSymbol;
 
-    @Override
-    public void onClick(String symbol) {
-        Timber.d("Symbol clicked: %s", symbol);
-        Intent intent = new Intent(this, StockDetailsLandingActivity.class);
-        intent.putExtra(StockChartDetailsFragment.STOCK_SYMBOL, symbol);
-        startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +73,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+
+        toolbar.setTitle("Stock Hawk");
 
         adapter = new StockAdapter(this, this);
         stockRecyclerView.setAdapter(adapter);
@@ -141,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void addStockButton(View view) {
-//        new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
         new MaterialDialog.Builder(this)
                 .title(R.string.dialog_title)
                 .customView(R.layout.add_stock_dialog, true)
@@ -159,6 +154,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 .show();
     }
 
+    @Override
+    public void onClick(String symbol) {
+        Timber.d("Symbol clicked: %s", symbol);
+        Intent intent = new Intent(this, StockDetailsLandingActivity.class);
+        intent.putExtra(StockChartDetailsFragment.STOCK_SYMBOL, symbol);
+        startActivity(intent);
+    }
 
     public void addStock(String symbol) {
         if (StringUtils.isNotEmpty(symbol)) {

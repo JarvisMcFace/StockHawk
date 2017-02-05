@@ -31,7 +31,6 @@
                 android:text="@{stockInfo.name}"
                 tools:text="Advanced Micro Devices, Inc." />
 
-
             <TextView
                 android:textDirection="anyRtl"
                 android:id="@+id/textView"

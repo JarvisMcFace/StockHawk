@@ -53,6 +53,7 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
     private StockTO stockTO;
     private FragmentStockChartDetailsBinding fragmentStockChartDetailsBinding;
+    private Toolbar toolbar;
 
     public static Fragment newInstance() {
         return new StockChartDetailsFragment();
@@ -75,21 +76,21 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
             fragmentStockChartDetailsBinding.setStockInfo(stockTO);
             initToolBar();
         }
-
-
     }
 
     private void initToolBar() {
-
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle(stockTO.getName());
-
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+
+        if (toolbar != null) {
+            toolbar.setTitle(stockTO.getName());
+        }
         populateChart();
     }
 
