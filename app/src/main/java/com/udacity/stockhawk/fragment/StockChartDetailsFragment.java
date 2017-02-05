@@ -27,8 +27,8 @@ import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.databinding.FragmentStockChartDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
-import com.udacity.stockhawk.ui.StockDetailsLatestDateComparator;
-import com.udacity.stockhawk.ui.StockDetailsMaxPriceComparator;
+import util.StockDetailsLatestDateComparator;
+import util.StockDetailsMaxPriceComparator;
 import com.udacity.stockhawk.ui.XYMarkerView;
 
 import java.text.SimpleDateFormat;

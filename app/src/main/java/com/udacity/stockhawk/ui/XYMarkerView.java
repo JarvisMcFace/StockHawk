@@ -20,7 +20,7 @@ import yahoofinance.histquotes.HistoricalQuote;
 /**
  * Custom implementation of the MarkerView.
  *
- * @author Philipp Jahoda
+ * @author David
  */
 public class XYMarkerView extends MarkerView {
 

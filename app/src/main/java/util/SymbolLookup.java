@@ -2,8 +2,6 @@ package util;
 
 import android.os.AsyncTask;
 
-import com.udacity.stockhawk.ui.CallbackWeakReference;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 

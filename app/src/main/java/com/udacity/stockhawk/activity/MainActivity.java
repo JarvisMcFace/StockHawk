@@ -1,4 +1,4 @@
-package com.udacity.stockhawk.ui;
+package com.udacity.stockhawk.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,11 +28,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.activity.StockDetailsLandingActivity;
+import com.udacity.stockhawk.adapter.StockAdapter;
 import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.fragment.StockChartDetailsFragment;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import util.CallbackWeakReference;
 
 import java.lang.ref.WeakReference;
 
@@ -43,8 +44,7 @@ import util.StringUtils;
 import util.SymbolLookup;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        SwipeRefreshLayout.OnRefreshListener,
-        StockAdapter.StockAdapterOnClickHandler,
+        SwipeRefreshLayout.OnRefreshListener, StockAdapter.StockAdapterOnClickHandler,
         CallbackWeakReference {
 
     private static final int STOCK_LOADER = 0;
@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView stockRecyclerView;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
-        @BindView(R.id.error)
-        TextView error;
+    @BindView(R.id.error)
+    TextView error;
     private StockAdapter adapter;
     private String stockSymbol;
 
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    void addStock(String symbol) {
+    public void addStock(String symbol) {
         if (StringUtils.isNotEmpty(symbol)) {
 
             if (networkUp()) {

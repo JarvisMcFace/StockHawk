@@ -1,4 +1,4 @@
-package com.udacity.stockhawk.ui;
+package util;
 
 import java.util.Comparator;
 

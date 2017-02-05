@@ -1,4 +1,4 @@
-package com.udacity.stockhawk.ui;
+package util;
 
 /**
  * Created by David on 12/15/16.
