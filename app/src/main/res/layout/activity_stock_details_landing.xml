@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/stock_detail_fragment"
+        android:id="@+id/stock_chart_detail_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.udacity.stockhawk.fragment.StockDetailsLandingFragment"/>

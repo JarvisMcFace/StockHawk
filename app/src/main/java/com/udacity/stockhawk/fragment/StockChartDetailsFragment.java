@@ -1,9 +1,6 @@
 package com.udacity.stockhawk.fragment;
 
 import android.app.Fragment;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -11,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +25,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.data.QuoteContract;
-import com.udacity.stockhawk.databinding.FragmentStockDetailsBinding;
+import com.udacity.stockhawk.databinding.FragmentStockChartDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
 import com.udacity.stockhawk.ui.StockDetailsLatestDateComparator;
 import com.udacity.stockhawk.ui.StockDetailsMaxPriceComparator;
@@ -42,11 +38,9 @@ import java.util.Collections;
 import java.util.List;
 
 import util.CurrencyAmountAxisValueFormatter;
-import util.StockSymbolCursorHelper;
+import util.RetrieveStockTOFromIntent;
 import util.WeeksDateAxisValueFormatter;
 import yahoofinance.histquotes.HistoricalQuote;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by David on 12/18/16.
@@ -55,9 +49,8 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
     public static final String STOCK_SYMBOL = "com.udacity.stockhawk.fragment.stock.symbol";
 
-    private String symbol;
     private StockTO stockTO;
-    private FragmentStockDetailsBinding fragmentStockDetailsBinding;
+    private FragmentStockChartDetailsBinding fragmentStockChartDetailsBinding;
 
     public static Fragment newInstance() {
         return new StockChartDetailsFragment();
@@ -65,34 +58,29 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragmentStockDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_stock_details, null, false);
-        return fragmentStockDetailsBinding.getRoot();
+        fragmentStockChartDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_stock_chart_details, null, false);
+        return fragmentStockChartDetailsBinding.getRoot();
 
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
 
+        stockTO = RetrieveStockTOFromIntent.execute(getActivity());
 
-        Intent intent = getActivity().getIntent();
-        Bundle bundle = intent.getExtras();
-
-        if (bundle != null) {
-            symbol = bundle.getString(STOCK_SYMBOL);
+        if (stockTO != null) {
+            fragmentStockChartDetailsBinding.setStockInfo(stockTO);
+            initToolBar();
         }
 
-        ContentResolver contentResolver = getActivity().getApplication().getContentResolver();
-        Cursor cursor = contentResolver.query(QuoteContract.Quote.makeUriForStock(symbol), null, null, null, null);
 
-        if (cursor != null || cursor.getCount() == 1) {
-            stockTO = StockSymbolCursorHelper.retrieveStockHistory(cursor);
-            cursor.close();
-        }
+    }
 
-        fragmentStockDetailsBinding.setStockInfo(stockTO);
-        Log.d(TAG, "David: " + "onActivityCreated() called with: savedInstanceState = [" + savedInstanceState + "]");
+    private void initToolBar() {
+
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle(stockTO.getName());
 
     }
 
@@ -104,8 +92,8 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
     }
 
     private void populateChart() {
-//        fragmentStockDetailsBinding.chart.setOnChartGestureListener(this);
-        fragmentStockDetailsBinding.chart.setOnChartValueSelectedListener(this);
+//        fragmentStockChartDetailsBinding.chart.setOnChartGestureListener(this);
+        fragmentStockChartDetailsBinding.chart.setOnChartValueSelectedListener(this);
 
         List<HistoricalQuote> historicalQuotes = stockTO.getHistory();
 
@@ -113,24 +101,24 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
         float minClosePrice = getMinClosePrice(historicalQuotes);
 
 
-        fragmentStockDetailsBinding.chart.setDescription(null);
-        fragmentStockDetailsBinding.chart.setDrawGridBackground(false);
-        fragmentStockDetailsBinding.chart.setTouchEnabled(true);
-        fragmentStockDetailsBinding.chart.setDragEnabled(true);
-        fragmentStockDetailsBinding.chart.setScaleEnabled(false);
-        fragmentStockDetailsBinding.chart.setScaleXEnabled(true);
-        fragmentStockDetailsBinding.chart.setScaleYEnabled(false);
-        fragmentStockDetailsBinding.chart.getAxisRight().setEnabled(false);
-        fragmentStockDetailsBinding.chart.setPinchZoom(false);
-        fragmentStockDetailsBinding.chart.setVisibleXRange(10, 20);
-        fragmentStockDetailsBinding.chart.animateX(2500);
+        fragmentStockChartDetailsBinding.chart.setDescription(null);
+        fragmentStockChartDetailsBinding.chart.setDrawGridBackground(false);
+        fragmentStockChartDetailsBinding.chart.setTouchEnabled(true);
+        fragmentStockChartDetailsBinding.chart.setDragEnabled(true);
+        fragmentStockChartDetailsBinding.chart.setScaleEnabled(false);
+        fragmentStockChartDetailsBinding.chart.setScaleXEnabled(true);
+        fragmentStockChartDetailsBinding.chart.setScaleYEnabled(false);
+        fragmentStockChartDetailsBinding.chart.getAxisRight().setEnabled(false);
+        fragmentStockChartDetailsBinding.chart.setPinchZoom(false);
+        fragmentStockChartDetailsBinding.chart.setVisibleXRange(10, 20);
+        fragmentStockChartDetailsBinding.chart.animateX(2500);
 
 
         IAxisValueFormatter xAxisFormatter = new CurrencyAmountAxisValueFormatter();
-        IAxisValueFormatter weekDateAxisValueFormatter = new WeeksDateAxisValueFormatter(fragmentStockDetailsBinding.chart, historicalQuotes);
+        IAxisValueFormatter weekDateAxisValueFormatter = new WeeksDateAxisValueFormatter(fragmentStockChartDetailsBinding.chart, historicalQuotes);
         XYMarkerView mv = new XYMarkerView(getContext(), historicalQuotes);
-        mv.setChartView(fragmentStockDetailsBinding.chart); // For bounds control
-        fragmentStockDetailsBinding.chart.setMarker(mv); // Set the marker to the chart
+        mv.setChartView(fragmentStockChartDetailsBinding.chart); // For bounds control
+        fragmentStockChartDetailsBinding.chart.setMarker(mv); // Set the marker to the chart
 
 
         // x-axis limit line
@@ -139,7 +127,7 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
         llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
         llXAxis.setTextSize(10f);
 
-        XAxis xAxis = fragmentStockDetailsBinding.chart.getXAxis();
+        XAxis xAxis = fragmentStockChartDetailsBinding.chart.getXAxis();
         xAxis.enableGridDashedLine(10f, 10f, 0f);
         xAxis.setValueFormatter(weekDateAxisValueFormatter);
         xAxis.setLabelRotationAngle(15f);
@@ -151,7 +139,7 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
         limitLineMax.setTextSize(8f);
 
 
-        YAxis axisLeft = fragmentStockDetailsBinding.chart.getAxisLeft();
+        YAxis axisLeft = fragmentStockChartDetailsBinding.chart.getAxisLeft();
         axisLeft.removeAllLimitLines();
         axisLeft.addLimitLine(limitLineMax);
 
@@ -182,12 +170,12 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
         LineDataSet lineDataSet;
 
-        if (fragmentStockDetailsBinding.chart.getData() != null &&
-                fragmentStockDetailsBinding.chart.getData().getDataSetCount() > 0) {
-            lineDataSet = (LineDataSet) fragmentStockDetailsBinding.chart.getData().getDataSetByIndex(0);
+        if (fragmentStockChartDetailsBinding.chart.getData() != null &&
+                fragmentStockChartDetailsBinding.chart.getData().getDataSetCount() > 0) {
+            lineDataSet = (LineDataSet) fragmentStockChartDetailsBinding.chart.getData().getDataSetByIndex(0);
             lineDataSet.setValues(values);
-            fragmentStockDetailsBinding.chart.getData().notifyDataChanged();
-            fragmentStockDetailsBinding.chart.notifyDataSetChanged();
+            fragmentStockChartDetailsBinding.chart.getData().notifyDataChanged();
+            fragmentStockChartDetailsBinding.chart.notifyDataSetChanged();
         } else {
             // create a dataset and give it a type
 
@@ -227,7 +215,7 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
             LineData data = new LineData(dataSets);
 
             // set data
-            fragmentStockDetailsBinding.chart.setData(data);
+            fragmentStockChartDetailsBinding.chart.setData(data);
         }
 
     }
