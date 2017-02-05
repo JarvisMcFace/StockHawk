@@ -37,5 +37,7 @@
     <string name="max_close_price">Max close price</string>
     <string name="data_set_range_description">%1$s - %2$s</string>
     <string name="details_chart">Chart</string>
+    <string name="opening_price">Opening Price:</string>
+    <string name="closing_price">Closing Price:</string>
 
 </resources>
