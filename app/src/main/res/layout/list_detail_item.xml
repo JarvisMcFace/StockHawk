@@ -20,98 +20,172 @@
             style="@style/StockHistoryDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/material_margin"
             android:layout_marginTop="@dimen/material_margin"
             android:textDirection="anyRtl"
-            app:history_close_date="@{history.date"
+            app:history_close_date="@{history.date}"
             tools:text="Monday December 19, 2017" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/StockHistoryDetails"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/opening_price"
-                android:textDirection="anyRtl" />
+                android:layout_marginStart="@dimen/material_margin"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-            <TextView
-                style="@style/StockHistoryDetails"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:text="@string/opening_price"
+                        android:textDirection="anyRtl" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:text="@string/closing_price"
+                        android:textDirection="anyRtl" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:text="@string/adjusted_close"
+                        android:textDirection="anyRtl" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/material_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:textDirection="anyRtl"
+                        app:history_opening_price="@{history.open}"
+                        tools:text="$43.99" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:textDirection="anyRtl"
+                        app:history_closing_price="@{history.close}"
+                        tools:text="$41.97" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:textDirection="anyRtl"
+                        app:history_adjusted_price="@{history.adjClose}"
+                        tools:text="$41.99" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textDirection="anyRtl"
-                app:history_opening_price="@{history.open"
-                tools:text="$43.99" />
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginLeft="@dimen/material_margin"
+                android:layout_marginRight="@dimen/material_margin"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_space"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:text="@string/history_high"
+                        android:textDirection="anyRtl" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:text="@string/history_low"
+                        android:textDirection="anyRtl" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        tools:text="@string/history_volume" />
+
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/material_margin"
+                    android:layout_marginTop="@dimen/material_space"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:textDirection="anyRtl"
+                        app:history_high_price="@{history.high}"
+                        tools:text="$133.44" />
+
+                    <TextView
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:textDirection="anyRtl"
+                        app:history_low_price="@{history.low}"
+                        tools:text="$33.44" />
+
+                    <TextView
+
+                        style="@style/StockHistoryDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/material_space"
+                        android:textDirection="anyRtl"
+                        app:history_low_price="@{history.volume}"
+                        tools:text="543,000" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/StockHistoryDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/closing_price"
-                android:textDirection="anyRtl" />
-
-            <TextView
-                style="@style/StockHistoryDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textDirection="anyRtl"
-                app:history_closing_price="@{history.close"
-                tools:text="$41.99" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/StockHistoryDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Adjusted Close"
-                android:textDirection="anyRtl" />
-
-            <TextView
-                style="@style/StockHistoryDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textDirection="anyRtl"
-                app:history_adjusted_price="@{history.adjClose"
-                tools:text="$41.99" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Adjusted close amount" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Open amount" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="high Open amount" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="low amount" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Volume" />
     </LinearLayout>
 
 </layout>

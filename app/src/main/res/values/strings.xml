@@ -39,5 +39,9 @@
     <string name="details_chart">Chart</string>
     <string name="opening_price">Opening Price:</string>
     <string name="closing_price">Closing Price:</string>
+    <string name="adjusted_close">Adjusted Close</string>
+    <string name="history_high">High</string>
+    <string name="history_low">Low</string>
+    <string name="history_volume">Volume</string>
 
 </resources>
