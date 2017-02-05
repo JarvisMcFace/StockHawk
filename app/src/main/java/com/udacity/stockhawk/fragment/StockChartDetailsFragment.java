@@ -27,8 +27,10 @@ import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.databinding.FragmentStockChartDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
+
 import util.StockDetailsLatestDateComparator;
 import util.StockDetailsMaxPriceComparator;
+
 import com.udacity.stockhawk.ui.XYMarkerView;
 
 import java.text.SimpleDateFormat;
@@ -92,14 +94,13 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
     }
 
     private void populateChart() {
-//        fragmentStockChartDetailsBinding.chart.setOnChartGestureListener(this);
+
         fragmentStockChartDetailsBinding.chart.setOnChartValueSelectedListener(this);
 
         List<HistoricalQuote> historicalQuotes = stockTO.getHistory();
 
         float maxClosePrice = getMaxClosePrice(historicalQuotes);
         float minClosePrice = getMinClosePrice(historicalQuotes);
-
 
         fragmentStockChartDetailsBinding.chart.setDescription(null);
         fragmentStockChartDetailsBinding.chart.setDrawGridBackground(false);
@@ -113,13 +114,11 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
         fragmentStockChartDetailsBinding.chart.setVisibleXRange(10, 20);
         fragmentStockChartDetailsBinding.chart.animateX(2500);
 
-
         IAxisValueFormatter xAxisFormatter = new CurrencyAmountAxisValueFormatter();
         IAxisValueFormatter weekDateAxisValueFormatter = new WeeksDateAxisValueFormatter(fragmentStockChartDetailsBinding.chart, historicalQuotes);
         XYMarkerView mv = new XYMarkerView(getContext(), historicalQuotes);
         mv.setChartView(fragmentStockChartDetailsBinding.chart); // For bounds control
         fragmentStockChartDetailsBinding.chart.setMarker(mv); // Set the marker to the chart
-
 
         // x-axis limit line
         LimitLine llXAxis = new LimitLine(10f, "Index 10");
@@ -138,7 +137,6 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
         limitLineMax.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
         limitLineMax.setTextSize(8f);
 
-
         YAxis axisLeft = fragmentStockChartDetailsBinding.chart.getAxisLeft();
         axisLeft.removeAllLimitLines();
         axisLeft.addLimitLine(limitLineMax);
@@ -153,10 +151,7 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
         // add data
         setData(historicalQuotes);
-
-
     }
-
 
     private void setData(List<HistoricalQuote> historicalQuotes) {
 
@@ -220,7 +215,6 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
     }
 
-
     private float getMaxClosePrice(List<HistoricalQuote> historicalQuotes) {
         List<HistoricalQuote> maxPriceSearch = new ArrayList<>(historicalQuotes);
         Collections.sort(maxPriceSearch, new StockDetailsMaxPriceComparator());
@@ -264,12 +258,11 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
     @Override
     public void onValueSelected(Entry entry, Highlight highlight) {
-
-
+        //Intentionally left blank
     }
 
     @Override
     public void onNothingSelected() {
-
+        //Intentionally left blank
     }
 }
