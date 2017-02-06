@@ -43,5 +43,6 @@
     <string name="history_high">High</string>
     <string name="history_low">Low</string>
     <string name="history_volume">Volume</string>
+    <string name="details_history">History</string>
 
 </resources>

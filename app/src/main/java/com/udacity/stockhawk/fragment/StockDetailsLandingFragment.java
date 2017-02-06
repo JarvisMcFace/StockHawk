@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,7 +29,6 @@ import util.RetrieveStockTOFromIntent;
  */
 public class StockDetailsLandingFragment extends Fragment {
 
-    private View rootView;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private PagerAdapter tabStockDetailsViewPagerAdapter;

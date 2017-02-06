@@ -7,6 +7,7 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.fragment.StockChartDetailsFragment;
+import com.udacity.stockhawk.fragment.StockDetailsFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class StockDetailsTabFragmentPagerAdapter extends FragmentPagerAdapter {
         Context context = weakReference.get();
         tabItems = new ArrayList<>();
         tabItems.add(new StockDetailsTabItem(context.getString(R.string.details_chart), StockChartDetailsFragment.newInstance()));
-        tabItems.add(new StockDetailsTabItem(context.getString(R.string.details_chart), StockChartDetailsFragment.newInstance()));
+        tabItems.add(new StockDetailsTabItem(context.getString(R.string.details_history), StockDetailsFragment.newInstance()));
     }
 
     @Override

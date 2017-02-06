@@ -177,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/material_space"
                         android:textDirection="anyRtl"
-                        app:history_low_price="@{history.volume}"
+                        app:history_volume="@{history.volume}"
                         tools:text="543,000" />
 
                 </LinearLayout>
