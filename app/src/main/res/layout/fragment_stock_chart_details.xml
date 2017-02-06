@@ -23,18 +23,18 @@
 
             <TextView
                 android:textDirection="anyRtl"
-                style="@style/Base.TextAppearance.AppCompat.Title"
+                style="@style/Base.TextAppearance.AppCompat.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_margin"
                 android:layout_marginStart="@dimen/material_margin"
-                android:text="@{stockInfo.name}"
-                tools:text="Advanced Micro Devices, Inc." />
+                android:text="@string/symbol"/>
 
             <TextView
                 android:textDirection="anyRtl"
                 android:id="@+id/textView"
-                style="@style/Base.TextAppearance.AppCompat.Caption"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_margin"
@@ -51,21 +51,21 @@
             android:orientation="horizontal">
 
             <TextView
-                android:textDirection="anyRtl"
                 android:id="@+id/stock_price"
                 style="@style/Base.TextAppearance.AppCompat.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_small_margin"
                 android:layout_marginStart="@dimen/material_margin"
+                android:textDirection="anyRtl"
                 app:stockPrice="@{stockInfo.price}"
                 tools:text="11.00" />
 
             <TextView
-                android:textDirection="anyRtl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{stockInfo.currency}"
+                android:textDirection="anyRtl"
                 android:textSize="13dp"
                 tools:text="USD" />
 
@@ -82,20 +82,20 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:textDirection="anyRtl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_margin"
                 android:src="@drawable/ic_arrow_upward"
+                android:textDirection="anyRtl"
                 android:textSize="18sp"
                 app:stockChange="@{stockInfo.change}"
                 tools:text="4.00" />
 
             <TextView
-                android:textDirection="anyRtl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_small_margin"
+                android:textDirection="anyRtl"
                 android:textSize="18sp"
                 app:stockChangePercent="@{stockInfo.percentChange}"
                 tools:text="(5.03%)" />
