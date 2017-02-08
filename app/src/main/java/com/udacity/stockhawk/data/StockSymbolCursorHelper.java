@@ -1,11 +1,10 @@
-package util;
+package com.udacity.stockhawk.data;
 
 import android.database.Cursor;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.fragment.StockChartDetailsFragment;
 import com.udacity.stockhawk.to.StockDividendTO;
 import com.udacity.stockhawk.to.StockStatsTO;

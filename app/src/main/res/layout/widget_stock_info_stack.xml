@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <StackView
+        android:id="@+id/widget_stock_info_stack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:loopViews="true" />
+
+    <FrameLayout
+        android:id="@+id/widget_empty_state_view"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/widget_empty_state_text"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/material_margin"
+            android:text="@string/widget_empty_state_text"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
+
+</FrameLayout>

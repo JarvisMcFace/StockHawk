@@ -22,6 +22,9 @@ public class StockTO implements Serializable {
     private StockDividendTO stockDividendTO;
     private StockStatsTO stockStatsTO;
 
+    public StockTO() {
+    }
+
     public StockTO(String name, String symbol, float price, float absoluteChange, float percentChange, List<HistoricalQuote> history, StockDividendTO dividendTO, StockStatsTO statsTO, String currency) {
         this.name = name;
         this.symbol = symbol;

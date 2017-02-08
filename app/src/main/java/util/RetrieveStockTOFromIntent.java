@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import com.udacity.stockhawk.data.QuoteContract;
+import com.udacity.stockhawk.data.StockSymbolCursorHelper;
 import com.udacity.stockhawk.to.StockTO;
 
 import static com.udacity.stockhawk.fragment.StockChartDetailsFragment.STOCK_SYMBOL;

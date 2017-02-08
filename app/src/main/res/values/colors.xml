@@ -13,5 +13,6 @@
     <color name="icons">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+    <color name="translucent_black">#15000000</color>
 
 </resources>

@@ -42,6 +42,7 @@ import timber.log.Timber;
 import util.CallbackWeakReference;
 import util.StringUtils;
 import util.SymbolLookup;
+import util.widget.RefreshStockInformationWidget;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener, StockAdapter.StockAdapterOnClickHandler,
@@ -194,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         adapter.setCursor(data);
+        RefreshStockInformationWidget.execute(getApplication());
     }
 
 

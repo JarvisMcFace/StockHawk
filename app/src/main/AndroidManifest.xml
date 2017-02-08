@@ -21,19 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.StockDetailsActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/stock_details_title_activity"/>
-
-
-     <activity android:name=".activity.StockChartDetailsActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/stock_chart_detail_title_activity"/>
-
-        <activity android:name=".activity.StockDetailsLandingActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/stock_details_title_activity"/>
+        <activity
+            android:name=".activity.StockDetailsActivity"
+            android:label="@string/stock_details_title_activity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.StockChartDetailsActivity"
+            android:label="@string/stock_chart_detail_title_activity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.StockDetailsLandingActivity"
+            android:label="@string/stock_details_title_activity"
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".sync.QuoteIntentService"
@@ -49,6 +48,16 @@
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".StockInfoWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider_stock_info" />
+        </receiver>
     </application>
 
 </manifest>
