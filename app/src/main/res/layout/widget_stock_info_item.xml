@@ -3,37 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="160dp"
     android:layout_height="140dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="@color/translucent_black"
-    android:gravity="center"
     android:layout_gravity="center"
+    android:background="@color/translucent_black"
     android:orientation="vertical"
-    android:paddingBottom="2dp"
-    android:paddingTop="2dp">
+    android:padding="2dp">
 
-    <TextView
-        android:id="@+id/widget_stock_name"
+    <LinearLayout
+        android:id="@+id/widget_stack_view_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
-        tools:text="Microsoft Corporation" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/widget_stock_symbol"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        tools:text="MSFT" />
 
-    <TextView
-        android:id="@+id/widget_stock_price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        tools:text="$43.44" />
+        <TextView
+            android:id="@+id/widget_stock_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            tools:text="Microsoft Corporation" />
 
+        <TextView
+            android:id="@+id/widget_stock_symbol"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            tools:text="MSFT" />
+
+        <TextView
+            android:id="@+id/widget_stock_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            tools:text="$43.44" />
+    </LinearLayout>
 </LinearLayout>
