@@ -3,6 +3,12 @@ package com.udacity.stockhawk.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView error;
     private StockAdapter adapter;
     private String stockSymbol;
+    private Paint paint = new Paint();
 
 
     @Override
@@ -90,22 +97,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         QuoteSyncJob.initialize(this);
         getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
-                PreferencesUtils.removeStock(MainActivity.this, symbol);
-                getContentResolver().delete(QuoteContract.Quote.makeUriForStock(symbol), null, null);
-            }
-        }).attachToRecyclerView(stockRecyclerView);
-
-
+        initStockSwipeDelete();
     }
+
 
     private boolean networkUp() {
         ConnectivityManager cm =
@@ -156,25 +150,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
+    public void symbolAvailable(Boolean isAvailable) {
+
+        if (isAvailable) {
+            addStock(stockSymbol);
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            String errorMessage = getString(R.string.symbol_not_available, stockSymbol);
+            Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
         Intent intent = new Intent(this, StockDetailsLandingActivity.class);
         intent.putExtra(StockDetailsLandingFragment.STOCK_SYMBOL, symbol);
         startActivity(intent);
-    }
-
-    public void addStock(String symbol) {
-        if (StringUtils.isNotEmpty(symbol)) {
-
-            if (networkUp()) {
-                swipeRefreshLayout.setRefreshing(true);
-            } else {
-                String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-            }
-            PreferencesUtils.addStock(this, symbol);
-            QuoteSyncJob.syncImmediately(this);
-        }
     }
 
     @Override
@@ -205,6 +197,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         adapter.setCursor(null);
     }
 
+
+    public void addStock(String symbol) {
+        if (StringUtils.isNotEmpty(symbol)) {
+
+            if (networkUp()) {
+                swipeRefreshLayout.setRefreshing(true);
+            } else {
+                String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
+            PreferencesUtils.addStock(this, symbol);
+            QuoteSyncJob.syncImmediately(this);
+        }
+    }
 
     private void setDisplayModeMenuItemIcon(MenuItem item) {
         if (PreferencesUtils.getDisplayMode(this)
@@ -242,16 +248,50 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         symbolLookup.execute(stockSymbol);
     }
 
-    @Override
-    public void symbolAvailable(Boolean isAvailable) {
+    private void initStockSwipeDelete() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
-        if (isAvailable) {
-            addStock(stockSymbol);
-        } else {
-            swipeRefreshLayout.setRefreshing(false);
-            String errorMessage = getString(R.string.symbol_not_available, stockSymbol);
-            Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_SHORT).show();
-        }
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                if (direction == ItemTouchHelper.LEFT) {
+                    String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
+                    PreferencesUtils.removeStock(MainActivity.this, symbol);
+                    getContentResolver().delete(QuoteContract.Quote.makeUriForStock(symbol), null, null);
+                    RefreshStockInformationWidget.execute(getApplication());
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                Bitmap icon;
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+
+                    if (dX < 0) {
+                        paint.setColor(Color.parseColor("#D32F2F"));
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background, paint);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                        c.drawBitmap(icon, null, icon_dest, paint);
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(stockRecyclerView);
     }
+
+
 }
