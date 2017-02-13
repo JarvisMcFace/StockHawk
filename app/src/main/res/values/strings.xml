@@ -48,7 +48,8 @@
     <string name="symbol">symbol</string>
     <string name="week_eneding">From:</string>
     <string name="appwidget_text">EXAMPLE</string>
-        <string name="add_widget">Add widget</string>
+    <string name="add_widget">Add widget</string>
     <string name="widget_empty_state_text">No stocks go add some</string>
+    <string name="loading_stocks">loading stocks</string>
 
 </resources>

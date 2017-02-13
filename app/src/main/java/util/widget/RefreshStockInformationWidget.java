@@ -5,7 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 
-import com.udacity.stockhawk.StockInfoWidgetProvider;
+import com.udacity.stockhawk.widget.StockInfoWidgetProvider;
 
 /**
  * Created by David on 2/5/17.

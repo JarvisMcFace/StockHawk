@@ -31,28 +31,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/material_space"
+                android:layout_marginLeft="@dimen/material_small_margin"
+                android:layout_marginRight="@dimen/material_small_margin"
                 android:gravity="center"
                 android:textDirection="anyRtl"
-                tools:text="Microsoft Corporation" />
+                tools:text="@string/loading_stocks" />
 
-            <TextView
-                android:id="@+id/widget_stock_symbol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/material_small_margin"
-                android:gravity="center"
-                android:textDirection="anyRtl"
-                tools:text="MSFT" />
-
-            <TextView
-                android:id="@+id/widget_stock_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:textDirection="anyRtl"
-                tools:text="$43.44" />
         </LinearLayout>
 
         <FrameLayout

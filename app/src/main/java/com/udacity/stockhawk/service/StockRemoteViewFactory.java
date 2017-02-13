@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.service;
 
 import android.app.Application;
+import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,8 +13,10 @@ import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.data.StockCursorHelper;
 import com.udacity.stockhawk.to.StockTO;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
+import util.ListUtils;
 import util.StringUtils;
 
 /**
@@ -29,6 +32,7 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
 
     public StockRemoteViewFactory(Application application, Intent intent) {
         this.application = application;
+        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         setWidgetStocks();
     }
 
@@ -39,12 +43,14 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
 
     @Override
     public void onDataSetChanged() {
+
         setWidgetStocks();
+
     }
 
     @Override
     public void onDestroy() {
-
+        stockTOs.clear();
     }
 
     @Override
@@ -57,26 +63,32 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
 
     @Override
     public RemoteViews getViewAt(int position) {
+
         RemoteViews remoteViews = new RemoteViews(application.getPackageName(), R.layout.widget_stock_info_item);
 
-        if (position <= getCount()) {
-            StockTO stockTO = stockTOs.get(position);
+        if (ListUtils.isEmpty(stockTOs)) {
+            return remoteViews;
+        }
 
-            String stockName = stockTO.getName();
-            String stockSymbol = stockTO.getSymbol();
-            float stockPrice = stockTO.getPrice();
 
-            if (StringUtils.isNotEmpty(stockName)) {
-                remoteViews.setTextViewText(R.id.widget_stock_name, stockName);
-            }
+        StockTO stockTO = stockTOs.get(position);
 
-            if (StringUtils.isNotEmpty(stockSymbol)) {
-                remoteViews.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
-            }
+        String stockName = stockTO.getName();
+        String stockSymbol = stockTO.getSymbol();
+        float stockPrice = stockTO.getPrice();
 
-            if (!Float.isNaN(stockPrice)) {
-                remoteViews.setTextViewText(R.id.widget_stock_price, "price");
-            }
+        if (StringUtils.isNotEmpty(stockName)) {
+            remoteViews.setTextViewText(R.id.widget_stock_name, stockName);
+        }
+
+        if (StringUtils.isNotEmpty(stockSymbol)) {
+            remoteViews.setTextViewText(R.id.widget_stock_symbol, stockSymbol);
+        }
+
+        if (!Float.isNaN(stockPrice)) {
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            String displayedResults = "$" + decimalFormat.format(stockPrice);
+            remoteViews.setTextViewText(R.id.widget_stock_price, displayedResults);
         }
 
         return remoteViews;
@@ -84,7 +96,8 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
 
     @Override
     public RemoteViews getLoadingView() {
-        return null;
+        RemoteViews remoteViews = new RemoteViews(application.getPackageName(), R.layout.widget_stock_loading_state);
+        return remoteViews;
     }
 
     @Override

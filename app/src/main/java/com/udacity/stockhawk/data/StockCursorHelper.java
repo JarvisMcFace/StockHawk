@@ -59,10 +59,9 @@ public class StockCursorHelper {
             StockTO stockTO = new StockTO();
             stockTO.setSymbol(symbol);
             stockTO.setName(name);
-            stockTO.setPrice(Float.valueOf(priceIndex));
+            stockTO.setPrice(Float.valueOf(price));
             stockTO.setHistory(stockHistoryTOs);
 
-            Log.d("Blah", "David: " + "getStockData() called with: cursor = [" + cursor + "]");
             return stockTO;
         } catch (Exception ex) {
             Log.d(StockChartDetailsFragment.class.getSimpleName(), "StockSymbolCursorHelper getStockHistoryTO: ");
