@@ -11,6 +11,7 @@ import android.widget.RemoteViewsService;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.data.StockCursorHelper;
+import com.udacity.stockhawk.fragment.StockDetailsLandingFragment;
 import com.udacity.stockhawk.to.StockTO;
 
 import java.text.DecimalFormat;
@@ -90,6 +91,10 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
             String displayedResults = "$" + decimalFormat.format(stockPrice);
             remoteViews.setTextViewText(R.id.widget_stock_price, displayedResults);
         }
+
+        Intent detailFillInIntent = new Intent();
+        detailFillInIntent.putExtra(StockDetailsLandingFragment.STOCK_SYMBOL, stockSymbol);
+        remoteViews.setOnClickFillInIntent(R.id.widget_stack_view_container, detailFillInIntent);
 
         return remoteViews;
     }

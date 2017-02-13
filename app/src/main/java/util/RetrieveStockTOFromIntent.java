@@ -8,9 +8,8 @@ import android.os.Bundle;
 
 import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.data.StockSymbolCursorHelper;
+import com.udacity.stockhawk.fragment.StockDetailsLandingFragment;
 import com.udacity.stockhawk.to.StockTO;
-
-import static com.udacity.stockhawk.fragment.StockChartDetailsFragment.STOCK_SYMBOL;
 
 /**
  * Created by David on 2/4/17.
@@ -25,7 +24,7 @@ public class RetrieveStockTOFromIntent {
         Bundle bundle = intent.getExtras();
 
         if (bundle != null) {
-            symbol = bundle.getString(STOCK_SYMBOL);
+            symbol = bundle.getString(StockDetailsLandingFragment.STOCK_SYMBOL);
         }
 
         if (StringUtils.isNotEmpty(symbol)) {

@@ -31,7 +31,7 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.adapter.StockAdapter;
 import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
-import com.udacity.stockhawk.fragment.StockChartDetailsFragment;
+import com.udacity.stockhawk.fragment.StockDetailsLandingFragment;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 import java.lang.ref.WeakReference;
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
         Intent intent = new Intent(this, StockDetailsLandingActivity.class);
-        intent.putExtra(StockChartDetailsFragment.STOCK_SYMBOL, symbol);
+        intent.putExtra(StockDetailsLandingFragment.STOCK_SYMBOL, symbol);
         startActivity(intent);
     }
 

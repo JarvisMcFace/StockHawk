@@ -49,8 +49,6 @@ import yahoofinance.histquotes.HistoricalQuote;
  */
 public class StockChartDetailsFragment extends Fragment implements OnChartValueSelectedListener {
 
-    public static final String STOCK_SYMBOL = "com.udacity.stockhawk.fragment.stock.symbol";
-
     private StockTO stockTO;
     private FragmentStockChartDetailsBinding fragmentStockChartDetailsBinding;
     private Toolbar toolbar;

@@ -1,5 +1,6 @@
 package com.udacity.stockhawk.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.activity.MainActivity;
+import com.udacity.stockhawk.activity.StockDetailsLandingActivity;
 import com.udacity.stockhawk.service.StockWidgetService;
 
 /**
@@ -45,6 +48,15 @@ public class StockInfoWidgetProvider extends AppWidgetProvider {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_stock_info_stack);
             remoteViews.setRemoteAdapter(R.id.widget_stock_info_stack, intent);
             remoteViews.setEmptyView(R.id.widget_stock_info_stack, R.id.widget_empty_state_view);
+
+            Intent viewStockIntent = new Intent(context, StockDetailsLandingActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, viewStockIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setPendingIntentTemplate(R.id.widget_stock_info_stack, pendingIntent);
+
+            Intent mainActivityIntent = new Intent(context, MainActivity.class);
+            mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            PendingIntent mainPendingIntent = PendingIntent.getActivity(context, appWidgetId, mainActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.widget_empty_state_view, mainPendingIntent);
 
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_stock_info_stack);

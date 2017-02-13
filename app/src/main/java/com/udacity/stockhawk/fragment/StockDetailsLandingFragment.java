@@ -29,6 +29,8 @@ import util.RetrieveStockTOFromIntent;
  */
 public class StockDetailsLandingFragment extends Fragment {
 
+    public static final String STOCK_SYMBOL = "com.udacity.stockhawk.fragment.stock.symbol";
+
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private PagerAdapter tabStockDetailsViewPagerAdapter;
