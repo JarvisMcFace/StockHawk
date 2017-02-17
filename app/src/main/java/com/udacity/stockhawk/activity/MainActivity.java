@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int STOCK_LOADER = 0;
     private View rootView;
 
+
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.toolbar)
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.error)
     TextView error;
+    @BindView(R.id.stocks_empty_state)
+    View emptyStateView;
     private StockAdapter adapter;
     private String stockSymbol;
     private Paint paint = new Paint();
@@ -113,21 +116,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         QuoteSyncJob.syncImmediately(this);
 
+
         if (!networkUp() && adapter.getItemCount() == 0) {
             swipeRefreshLayout.setRefreshing(false);
 //            error.setText(getString(R.string.error_no_network));
 //            error.setVisibility(View.VISIBLE);
-
+            //Snackbar message of last udpate date //TODO
+            emptyStateView.setVisibility(View.VISIBLE);
         } else if (!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
         } else if (PreferencesUtils.getStocks(this).size() == 0) {
-            Timber.d("WHYAREWEHERE");
+            Timber.d("All Stocks have been removed, add default list");
+            //TODO Only allow to run once
             swipeRefreshLayout.setRefreshing(false);
-//            error.setText(getString(R.string.error_no_stocks));
-//            error.setVisibility(View.VISIBLE);
+            emptyStateView.setVisibility(View.VISIBLE);
         } else {
-//            error.setVisibility(View.GONE);
+            emptyStateView.setVisibility(View.GONE);
+            error.setVisibility(View.GONE);
         }
     }
 
@@ -181,9 +187,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         swipeRefreshLayout.setRefreshing(false);
 
-        if (data.getCount() != 0) {
-            //TODO David show Snackbaar for error message
-//            error.setVisibility(View.GONE);
+        if (data.getCount() > 0) {
+            error.setVisibility(View.GONE);
+            emptyStateView.setVisibility(View.GONE);
         }
 
         adapter.setCursor(data);
@@ -292,6 +298,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(stockRecyclerView);
     }
-
-
 }

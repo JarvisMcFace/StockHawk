@@ -16,5 +16,7 @@ public class StockHawkApp extends Application {
             Timber.uprootAll();
             Timber.plant(new Timber.DebugTree());
         }
+
+
     }
 }
