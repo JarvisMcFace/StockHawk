@@ -1,5 +1,6 @@
 package com.udacity.stockhawk.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -50,9 +52,11 @@ import util.StringUtils;
 import util.SymbolLookup;
 import util.widget.RefreshStockInformationWidget;
 
+import static android.view.View.VISIBLE;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener, StockAdapter.StockAdapterOnClickHandler,
-        CallbackWeakReference {
+        CallbackWeakReference, StockRemoedCalledBack {
 
     private static final int STOCK_LOADER = 0;
     private View rootView;
@@ -114,27 +118,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onRefresh() {
 
+        if (!networkUp()) {
+            showNoNetworkSnackBar();
+            return;
+        }
+
+        if (adapter.getItemCount() == 0 || PreferencesUtils.getStocks(this).size() == 0) {
+            deriveEmptyStateView();
+            return;
+        }
+
         QuoteSyncJob.syncImmediately(this);
 
-
-        if (!networkUp() && adapter.getItemCount() == 0) {
-            swipeRefreshLayout.setRefreshing(false);
-//            error.setText(getString(R.string.error_no_network));
-//            error.setVisibility(View.VISIBLE);
-            //Snackbar message of last udpate date //TODO
-            emptyStateView.setVisibility(View.VISIBLE);
-        } else if (!networkUp()) {
-            swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
-        } else if (PreferencesUtils.getStocks(this).size() == 0) {
-            Timber.d("All Stocks have been removed, add default list");
-            //TODO Only allow to run once
-            swipeRefreshLayout.setRefreshing(false);
-            emptyStateView.setVisibility(View.VISIBLE);
-        } else {
-            emptyStateView.setVisibility(View.GONE);
-            error.setVisibility(View.GONE);
-        }
+//        if (!networkUp() && adapter.getItemCount() == 0) {
+//            swipeRefreshLayout.setRefreshing(false);
+////            error.setText(getString(R.string.error_no_network));
+////            error.setVisibility(View.VISIBLE);
+//            //Snackbar message of last udpate date //TODO
+//
+//            deriveEmptyStateView();
+//        } else if (!networkUp()) {
+//            swipeRefreshLayout.setRefreshing(false);
+//            showNoNetworkSnackBar();
+//        } else if (PreferencesUtils.getStocks(this).size() == 0) {
+//            Timber.d("All Stocks have been removed, add default list");
+//            //TODO Only allow to run once
+//
+//        } else {
+//            emptyStateView.setVisibility(View.GONE);
+//            error.setVisibility(View.GONE);
+//        }
     }
 
     public void addStockButton(View view) {
@@ -164,6 +177,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             swipeRefreshLayout.setRefreshing(false);
             String errorMessage = getString(R.string.symbol_not_available, stockSymbol);
             Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void deriveEmptyStateView() {
+        if (adapter.getItemCount() == 0) {
+            swipeRefreshLayout.setRefreshing(false);
+            emptyStateView.setVisibility(VISIBLE);
+        } else {
+            swipeRefreshLayout.setRefreshing(true);
+            emptyStateView.setVisibility(View.GONE);
         }
     }
 
@@ -205,8 +229,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     public void addStock(String symbol) {
-        if (StringUtils.isNotEmpty(symbol)) {
 
+        if (StringUtils.isNotEmpty(symbol)) {
             if (networkUp()) {
                 swipeRefreshLayout.setRefreshing(true);
             } else {
@@ -255,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void initStockSwipeDelete() {
+
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
@@ -294,8 +319,39 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
+
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+                deriveEmptyStateView();
+            }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(stockRecyclerView);
+    }
+
+
+    private void showNoNetworkSnackBar() {
+
+        int accentColor = ContextCompat.getColor(this, R.color.colorAccent);
+        Snackbar.make(rootView, getString(R.string.no_connectivity), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(R.string.retry), getNetorkRetryOnClickListener(this))
+                .setActionTextColor(accentColor)
+                .show();
+    }
+
+    private View.OnClickListener getNetorkRetryOnClickListener(final Activity activity) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (networkUp()) {
+                    QuoteSyncJob.syncImmediately(activity);
+                    Snackbar.make(rootView, getString(R.string.network_restored), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    showNoNetworkSnackBar();
+                }
+            }
+        };
     }
 }

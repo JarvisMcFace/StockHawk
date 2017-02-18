@@ -75,7 +75,7 @@ public final class QuoteSyncJob {
                 Stock stock = quotes.get(stockSymbol);
                 StockQuote quote = stock.getQuote();
 
-                if (quote.getPrice() == null){
+                if (quote.getPrice() == null) {
                     continue;
                 }
                 final String currency = stock.getCurrency();
@@ -93,17 +93,16 @@ public final class QuoteSyncJob {
                 String stats = gson.toJson(stock.getStats());
 
 
-
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
                 quoteCV.put(QuoteContract.Quote.COLUMN_PRICE, price);
                 quoteCV.put(QuoteContract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
                 quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, stockHistoryJson.toString());
-                quoteCV.put(QuoteContract.Quote.COLUMN_NAME,stockName);
-                quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND,dividends);
-                quoteCV.put(QuoteContract.Quote.COLUMN_STATS,stats);
-                quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY,currency);
+                quoteCV.put(QuoteContract.Quote.COLUMN_NAME, stockName);
+                quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND, dividends);
+                quoteCV.put(QuoteContract.Quote.COLUMN_STATS, stats);
+                quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY, currency);
 
                 quoteContentValues.add(quoteCV);
 
@@ -125,17 +124,12 @@ public final class QuoteSyncJob {
     private static void schedulePeriodic(Context context) {
         Timber.d("Scheduling a periodic task");
 
-
         JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
-
-
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(PERIOD)
                 .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 
-
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
         scheduler.schedule(builder.build());
     }
 
@@ -149,9 +143,9 @@ public final class QuoteSyncJob {
 
     public static synchronized void syncImmediately(Context context) {
 
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
         if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
             Intent nowIntent = new Intent(context, QuoteIntentService.class);
             context.startService(nowIntent);
@@ -159,18 +153,10 @@ public final class QuoteSyncJob {
 
             JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
 
-
-            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
-
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 
             JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
             scheduler.schedule(builder.build());
-
-
         }
     }
-
-
 }

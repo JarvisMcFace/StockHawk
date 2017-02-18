@@ -30,6 +30,7 @@
     <string name="error_no_stocks">No stocks added! Hit the floating action button to add one.</string>
 
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
+    <string name="no_connectivity">No network connection.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
     <string name="symbol_not_available">Symbol %s is not available</string>
     <string name="stock_details_title_activity">Stock Details</string>
@@ -51,5 +52,7 @@
     <string name="add_widget">Add widget</string>
     <string name="stocks_empty_state_text">No stocks go add some&#8230;</string>
     <string name="loading_stocks">loading stocks</string>
+    <string name="retry">retry</string>
+    <string name="network_restored">Network restored, updating stocks.</string>
 
 </resources>
