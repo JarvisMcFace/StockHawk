@@ -15,6 +15,8 @@ import com.udacity.stockhawk.fragment.StockDetailsLandingFragment;
 import com.udacity.stockhawk.to.StockTO;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import util.ListUtils;
@@ -77,6 +79,8 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
         String stockName = stockTO.getName();
         String stockSymbol = stockTO.getSymbol();
         float stockPrice = stockTO.getPrice();
+        Date date = stockTO.getLastUpdated();
+        float priceChange = stockTO.getChange();
 
         if (StringUtils.isNotEmpty(stockName)) {
             remoteViews.setTextViewText(R.id.widget_stock_name, stockName);
@@ -90,6 +94,25 @@ public class StockRemoteViewFactory implements RemoteViewsService.RemoteViewsFac
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
             String displayedResults = "$" + decimalFormat.format(stockPrice);
             remoteViews.setTextViewText(R.id.widget_stock_price, displayedResults);
+        }
+
+        if (!Float.isNaN(priceChange)) {
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            String displayedResults = "$" + decimalFormat.format(priceChange);
+            remoteViews.setTextViewText(R.id.widget_price_difference, displayedResults);
+
+            if (priceChange > 0) {
+                remoteViews.setImageViewResource(R.id.widget_price_direction_arrow, R.drawable.ic_arrow_upward);
+            } else {
+                remoteViews.setImageViewResource(R.id.widget_price_direction_arrow, R.drawable.ic_arrow_downward);
+            }
+        }
+
+        if (date != null) {
+            SimpleDateFormat formatDate = new SimpleDateFormat("MM/dd/yyyy");
+            String lastUpdated = formatDate.format(date.getTime());
+            String dataSetRange = application.getString(R.string.as_of_date, lastUpdated);
+            remoteViews.setTextViewText(R.id.widget_as_of_date, dataSetRange);
         }
 
         Intent detailFillInIntent = new Intent();

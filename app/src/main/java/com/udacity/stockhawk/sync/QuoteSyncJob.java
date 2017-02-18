@@ -92,6 +92,8 @@ public final class QuoteSyncJob {
                 String dividends = gson.toJson(stock.getDividend());
                 String stats = gson.toJson(stock.getStats());
 
+                Calendar calendar = Calendar.getInstance();
+                String timeInMills = String.valueOf(calendar.getTimeInMillis());
 
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
@@ -103,6 +105,7 @@ public final class QuoteSyncJob {
                 quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND, dividends);
                 quoteCV.put(QuoteContract.Quote.COLUMN_STATS, stats);
                 quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY, currency);
+                quoteCV.put(QuoteContract.Quote.COLUMN_LAST_UPDATED, timeInMills);
 
                 quoteContentValues.add(quoteCV);
 

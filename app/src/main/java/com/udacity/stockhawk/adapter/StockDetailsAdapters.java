@@ -59,8 +59,6 @@ public class StockDetailsAdapters {
     @BindingAdapter("stockDirectionArrow")
     public static void setStockDirectionArrow(ImageView imageView, float stockPrice) {
 
-        Context context = imageView.getContext();
-
         if (stockPrice > 0) {
             imageView.setImageResource(R.drawable.ic_arrow_upward);
         } else {

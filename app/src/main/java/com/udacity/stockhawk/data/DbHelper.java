@@ -29,6 +29,7 @@ class DbHelper extends SQLiteOpenHelper {
                 +  QuoteContract.Quote.COLUMN_DIVIDEND + " TEXT NOT NULL, "
                 +  QuoteContract.Quote.COLUMN_STATS + " TEXT NOT NULL, "
                 +  QuoteContract.Quote.COLUMN_CURRENCY + " TEXT NOT NULL, "
+                +  QuoteContract.Quote.COLUMN_LAST_UPDATED + " TEXT NOT NULL, "
                 + "UNIQUE (" + QuoteContract.Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
         db.execSQL(builder);
     }

@@ -54,5 +54,6 @@
     <string name="loading_stocks">loading stocks</string>
     <string name="retry">retry</string>
     <string name="network_restored">Network restored, updating stocks.</string>
+    <string name="as_of_date">as of %1$s</string>
 
 </resources>

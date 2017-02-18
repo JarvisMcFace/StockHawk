@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.to;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import yahoofinance.histquotes.HistoricalQuote;
@@ -21,11 +22,12 @@ public class StockTO implements Serializable {
     private List<HistoricalQuote> history;
     private StockDividendTO stockDividendTO;
     private StockStatsTO stockStatsTO;
+    private Date lastUpdated;
 
     public StockTO() {
     }
 
-    public StockTO(String name, String symbol, float price, float absoluteChange, float percentChange, List<HistoricalQuote> history, StockDividendTO dividendTO, StockStatsTO statsTO, String currency) {
+    public StockTO(String name, String symbol, float price, float absoluteChange, float percentChange, List<HistoricalQuote> history, StockDividendTO dividendTO, StockStatsTO statsTO, String currency, Date lastUpdated) {
         this.name = name;
         this.symbol = symbol;
         this.price = price;
@@ -35,6 +37,8 @@ public class StockTO implements Serializable {
         this.stockDividendTO = dividendTO;
         this.stockStatsTO = statsTO;
         this.currency = currency;
+        this.lastUpdated = lastUpdated;
+
     }
 
     public String getSymbol() {
@@ -107,5 +111,13 @@ public class StockTO implements Serializable {
 
     public void setStockStatsTO(StockStatsTO stockStatsTO) {
         this.stockStatsTO = stockStatsTO;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

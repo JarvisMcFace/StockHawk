@@ -11,6 +11,7 @@ import com.udacity.stockhawk.to.StockStatsTO;
 import com.udacity.stockhawk.to.StockTO;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
 import yahoofinance.histquotes.HistoricalQuote;
@@ -53,13 +54,19 @@ public class StockSymbolCursorHelper {
             String stats = cursor.getString(QuoteContract.Quote.POSITION_STATS);
             String currency = cursor.getString(QuoteContract.Quote.POSITION_CURRENCY);
 
+            String lastUpdated = cursor.getString(QuoteContract.Quote.POSITION_LAST_UPDATED);
+
+            Date date = new Date();
+            date.setTime(Long.parseLong(lastUpdated));
+
             Gson gson = new Gson();
-            Type listOfTestObject = new TypeToken<List<HistoricalQuote>>() {}.getType();
+            Type listOfTestObject = new TypeToken<List<HistoricalQuote>>() {
+            }.getType();
             List<HistoricalQuote> stockHistoryTOs = gson.fromJson(history, listOfTestObject);
             StockDividendTO dividendTO = gson.fromJson(dividend, StockDividendTO.class);
             StockStatsTO statsTO = gson.fromJson(stats, StockStatsTO.class);
 
-            StockTO stockTO = new StockTO(name, symbol, price, absoluteChange, percentChange, stockHistoryTOs, dividendTO, statsTO, currency);
+            StockTO stockTO = new StockTO(name, symbol, price, absoluteChange, percentChange, stockHistoryTOs, dividendTO, statsTO, currency, date);
 
             return stockTO;
 

@@ -58,7 +58,6 @@ public class StockInfoWidgetProvider extends AppWidgetProvider {
             PendingIntent mainPendingIntent = PendingIntent.getActivity(context, appWidgetId, mainActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_empty_state_view, mainPendingIntent);
 
-
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_stock_info_stack);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }

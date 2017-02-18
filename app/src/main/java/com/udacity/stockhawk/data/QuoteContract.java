@@ -27,6 +27,7 @@ public final class QuoteContract {
         public static final String COLUMN_DIVIDEND = "dividend";
         public static final String COLUMN_STATS = "stats";
         public static final String COLUMN_CURRENCY = "currency";
+        public static final String COLUMN_LAST_UPDATED = "lastupdated";
 
         public static final int POSITION_ID = 0;
         public static final int POSITION_SYMBOL = 1;
@@ -38,6 +39,7 @@ public final class QuoteContract {
         public static final int POSITION_DIVIDEND  = 7;
         public static final int POSITION_STATS  = 8;
         public static final int POSITION_CURRENCY  = 9;
+        public static final int POSITION_LAST_UPDATED  = 10;
 
         public static final String[] QUOTE_COLUMNS = {
                 _ID,
@@ -49,7 +51,8 @@ public final class QuoteContract {
                 COLUMN_NAME,
                 COLUMN_DIVIDEND,
                 COLUMN_STATS,
-                COLUMN_CURRENCY
+                COLUMN_CURRENCY,
+                COLUMN_LAST_UPDATED
         };
 
         static final String TABLE_NAME = "quotes";
