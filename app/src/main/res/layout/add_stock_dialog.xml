@@ -4,16 +4,24 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <EditText
-        android:textDirection="anyRtl"
-        android:id="@+id/dialog_stock"
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="16dp"
-        android:hint="@string/dialog_hint"
-        android:inputType="textCapCharacters" />
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/dialog_stock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="16dp"
+            android:hint="@string/dialog_add_symbol"
+            android:inputType="textCapCharacters" />
+
+    </android.support.design.widget.TextInputLayout>
+
 
 </LinearLayout>

@@ -13,8 +13,8 @@ import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -26,14 +26,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.adapter.StockAdapter;
@@ -72,12 +71,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.error)
     TextView error;
+    @BindView(R.id.fab)
+    FloatingActionButton floatingActionButton;
+    @BindView(R.id.stocks_last_updated_date)
+    View stocksLastUpdatedDate;
     @BindView(R.id.stocks_empty_state)
     View emptyStateView;
     private StockAdapter adapter;
     private String stockSymbol;
     private Paint paint = new Paint();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +88,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         rootView = findViewById(R.id.coordinator);
 
         ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(false);
-
-        toolbar.setTitle("Stock Hawk");
+        initToolBar();
 
         adapter = new StockAdapter(this, this);
         stockRecyclerView.setAdapter(adapter);
@@ -99,26 +96,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setRefreshing(true);
-        onRefresh();
 
         QuoteSyncJob.initialize(this);
         getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
+        onRefresh();
 
         initStockSwipeDelete();
-    }
-
-
-    private boolean networkUp() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
     @Override
     public void onRefresh() {
 
         if (!networkUp()) {
+            stocksLastUpdatedDate.setVisibility(View.VISIBLE);
             showNoNetworkSnackBar();
             return;
         }
@@ -129,43 +119,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         QuoteSyncJob.syncImmediately(this);
-
-//        if (!networkUp() && adapter.getItemCount() == 0) {
-//            swipeRefreshLayout.setRefreshing(false);
-////            error.setText(getString(R.string.error_no_network));
-////            error.setVisibility(View.VISIBLE);
-//            //Snackbar message of last udpate date //TODO
-//
-//            deriveEmptyStateView();
-//        } else if (!networkUp()) {
-//            swipeRefreshLayout.setRefreshing(false);
-//            showNoNetworkSnackBar();
-//        } else if (PreferencesUtils.getStocks(this).size() == 0) {
-//            Timber.d("All Stocks have been removed, add default list");
-//            //TODO Only allow to run once
-//
-//        } else {
-//            emptyStateView.setVisibility(View.GONE);
-//            error.setVisibility(View.GONE);
-//        }
     }
 
+    /**
+     * Job: Add stock symbol dialog
+     *
+     * @param view defined in xml
+     */
     public void addStockButton(View view) {
+
         new MaterialDialog.Builder(this)
                 .title(R.string.dialog_title)
-                .customView(R.layout.add_stock_dialog, true)
+                .content(R.string.dialog_add_symbol)
                 .positiveText(R.string.dialog_add)
-                .negativeText(R.string.dialog_cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                .input(R.string.dialog_hint, R.string.dialog_hint, false, null)
+                .inputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS | InputType.TYPE_CLASS_TEXT)
+                .inputRange(1, 5)
+                .input(R.string.dialog_hint, 0, new MaterialDialog.InputCallback() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        EditText symbol = (EditText) dialog.getView().findViewById(R.id.dialog_stock);
-                        stockSymbol = symbol.getText().toString().trim();
-                        swipeRefreshLayout.setRefreshing(true);
-                        lookupStock();
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        performAdd(input);
                     }
                 })
                 .show();
+    }
+
+    private void performAdd(CharSequence input) {
+        stockSymbol = input.toString().trim();
+        swipeRefreshLayout.setRefreshing(true);
+        lookupStock();
     }
 
     @Override
@@ -183,10 +165,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void deriveEmptyStateView() {
         if (adapter.getItemCount() == 0) {
-            swipeRefreshLayout.setRefreshing(false);
             emptyStateView.setVisibility(VISIBLE);
         } else {
-            swipeRefreshLayout.setRefreshing(true);
             emptyStateView.setVisibility(View.GONE);
         }
     }
@@ -214,19 +194,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (data.getCount() > 0) {
             error.setVisibility(View.GONE);
             emptyStateView.setVisibility(View.GONE);
+            stocksLastUpdatedDate.setVisibility(View.GONE);
         }
 
         adapter.setCursor(data);
         RefreshStockInformationWidget.execute(getApplication());
     }
 
-
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         swipeRefreshLayout.setRefreshing(false);
         adapter.setCursor(null);
     }
-
 
     public void addStock(String symbol) {
 
@@ -239,15 +218,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             PreferencesUtils.addStock(this, symbol);
             QuoteSyncJob.syncImmediately(this);
-        }
-    }
-
-    private void setDisplayModeMenuItemIcon(MenuItem item) {
-        if (PreferencesUtils.getDisplayMode(this)
-                .equals(getString(R.string.pref_display_mode_absolute_key))) {
-            item.setIcon(R.drawable.ic_percentage);
-        } else {
-            item.setIcon(R.drawable.ic_dollar);
         }
     }
 
@@ -330,14 +300,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         itemTouchHelper.attachToRecyclerView(stockRecyclerView);
     }
 
+    private boolean networkUp() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
 
     private void showNoNetworkSnackBar() {
-
+        floatingActionButton.hide();
         int accentColor = ContextCompat.getColor(this, R.color.colorAccent);
         Snackbar.make(rootView, getString(R.string.no_connectivity), Snackbar.LENGTH_INDEFINITE)
                 .setAction(getString(R.string.retry), getNetorkRetryOnClickListener(this))
                 .setActionTextColor(accentColor)
                 .show();
+    }
+
+    private void setDisplayModeMenuItemIcon(MenuItem item) {
+        if (PreferencesUtils.getDisplayMode(this)
+                .equals(getString(R.string.pref_display_mode_absolute_key))) {
+            item.setIcon(R.drawable.ic_percentage);
+        } else {
+            item.setIcon(R.drawable.ic_dollar);
+        }
+    }
+
+    private void initToolBar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        toolbar.setTitle("Stock Hawk");
     }
 
     private View.OnClickListener getNetorkRetryOnClickListener(final Activity activity) {
@@ -347,8 +339,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 if (networkUp()) {
                     QuoteSyncJob.syncImmediately(activity);
+                    floatingActionButton.show();
                     Snackbar.make(rootView, getString(R.string.network_restored), Snackbar.LENGTH_SHORT).show();
                 } else {
+                    floatingActionButton.hide();
                     showNoNetworkSnackBar();
                 }
             }
