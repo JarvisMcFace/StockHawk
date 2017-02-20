@@ -1,7 +1,6 @@
 package com.udacity.stockhawk.activity;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -39,21 +38,17 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.adapter.StockAdapter;
 import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
-import com.udacity.stockhawk.data.StockCursorHelper;
 import com.udacity.stockhawk.fragment.StockDetailsLandingFragment;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
-import com.udacity.stockhawk.to.StockTO;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import util.CallbackWeakReference;
-import util.ListUtils;
 import util.StringUtils;
 import util.SymbolLookup;
 import util.widget.RefreshStockInformationWidget;
@@ -363,19 +358,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void showStockLastUpdatedDate() {
         stocksLastUpdatedDate.setVisibility(View.VISIBLE);
 
-        ContentResolver contentResolver = getContentResolver();
-        Cursor cursor = contentResolver.query(QuoteContract.Quote.URI, null, null, null, null);
-        List<StockTO> stockTOs = StockCursorHelper.retrieveAllStocks(cursor);
-
-        if (ListUtils.isEmpty(stockTOs)){
-            return;
-        }
-
-        StockTO stockTO = stockTOs.get(0);
-
-
-        Date date = stockTO.getLastUpdated();
-
+        String lastUpdatedTime = PreferencesUtils.getLastUpdatedDate(this);
+        Date date = new Date();
+        date.setTime(Long.parseLong(lastUpdatedTime));
 
         SimpleDateFormat formatDate = new SimpleDateFormat("MM/dd/yyyy");
         String lastUpdated = formatDate.format(date.getTime());

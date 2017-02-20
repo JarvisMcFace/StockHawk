@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.udacity.stockhawk.data.PreferencesUtils;
@@ -62,11 +63,13 @@ public final class QuoteSyncJob {
                 return;
             }
 
+            Calendar calendar = Calendar.getInstance();
+            String lastUpdatedTime = String.valueOf(calendar.getTimeInMillis());
+
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
             Iterator<String> iterator = stockCopy.iterator();
 
             Timber.d(quotes.toString());
-
             ArrayList<ContentValues> quoteContentValues = new ArrayList<>();
 
             while (iterator.hasNext()) {
@@ -92,23 +95,10 @@ public final class QuoteSyncJob {
                 String dividends = gson.toJson(stock.getDividend());
                 String stats = gson.toJson(stock.getStats());
 
-                Calendar calendar = Calendar.getInstance();
-                String timeInMills = String.valueOf(calendar.getTimeInMillis());
-
-                ContentValues quoteCV = new ContentValues();
-                quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
-                quoteCV.put(QuoteContract.Quote.COLUMN_PRICE, price);
-                quoteCV.put(QuoteContract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-                quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, stockHistoryJson.toString());
-                quoteCV.put(QuoteContract.Quote.COLUMN_NAME, stockName);
-                quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND, dividends);
-                quoteCV.put(QuoteContract.Quote.COLUMN_STATS, stats);
-                quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY, currency);
-                quoteCV.put(QuoteContract.Quote.COLUMN_LAST_UPDATED, timeInMills);
-
+                ContentValues quoteCV = getContentValues(lastUpdatedTime, stockSymbol, currency, stockName, price, change, percentChange, stockHistoryJson, dividends, stats);
                 quoteContentValues.add(quoteCV);
 
+                updateLastUpdateDate(context, lastUpdatedTime);
             }
 
             context.getContentResolver()
@@ -122,6 +112,26 @@ public final class QuoteSyncJob {
         } catch (IOException exception) {
             Timber.e(exception, "Error fetching stock quotes");
         }
+    }
+
+    @NonNull
+    private static ContentValues getContentValues(String lastUpdatedTime, String stockSymbol, String currency, String stockName, float price, float change, float percentChange, String stockHistoryJson, String dividends, String stats) {
+        ContentValues quoteCV = new ContentValues();
+        quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
+        quoteCV.put(QuoteContract.Quote.COLUMN_PRICE, price);
+        quoteCV.put(QuoteContract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
+        quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
+        quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, stockHistoryJson.toString());
+        quoteCV.put(QuoteContract.Quote.COLUMN_NAME, stockName);
+        quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND, dividends);
+        quoteCV.put(QuoteContract.Quote.COLUMN_STATS, stats);
+        quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY, currency);
+        quoteCV.put(QuoteContract.Quote.COLUMN_LAST_UPDATED, lastUpdatedTime);
+        return quoteCV;
+    }
+
+    private static void updateLastUpdateDate(Context context, String lastUpdatedTime) {
+        PreferencesUtils.setLastUpdatedDate(context, lastUpdatedTime);
     }
 
     private static void schedulePeriodic(Context context) {
