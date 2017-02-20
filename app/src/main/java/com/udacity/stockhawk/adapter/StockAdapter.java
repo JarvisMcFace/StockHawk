@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.data.QuoteContract;
 import com.udacity.stockhawk.data.PreferencesUtils;
+import com.udacity.stockhawk.data.QuoteContract;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -52,6 +52,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
         cursor.moveToPosition(position);
         return cursor.getString(QuoteContract.Quote.POSITION_SYMBOL);
     }
+
 
     @Override
     public StockViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

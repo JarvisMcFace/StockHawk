@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.activity;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,15 +39,21 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.adapter.StockAdapter;
 import com.udacity.stockhawk.data.PreferencesUtils;
 import com.udacity.stockhawk.data.QuoteContract;
+import com.udacity.stockhawk.data.StockCursorHelper;
 import com.udacity.stockhawk.fragment.StockDetailsLandingFragment;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.to.StockTO;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import util.CallbackWeakReference;
+import util.ListUtils;
 import util.StringUtils;
 import util.SymbolLookup;
 import util.widget.RefreshStockInformationWidget;
@@ -74,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
     @BindView(R.id.stocks_last_updated_date)
-    View stocksLastUpdatedDate;
+    TextView stocksLastUpdatedDate;
     @BindView(R.id.stocks_empty_state)
     View emptyStateView;
     private StockAdapter adapter;
@@ -106,11 +113,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onRefresh() {
+        QuoteSyncJob.syncImmediately(this);
 
         if (!networkUp()) {
-            stocksLastUpdatedDate.setVisibility(View.VISIBLE);
             showNoNetworkSnackBar();
+            showStockLastUpdatedDate();
             return;
+        } else {
+            stocksLastUpdatedDate.setVisibility(View.GONE);
         }
 
         if (adapter.getItemCount() == 0 || PreferencesUtils.getStocks(this).size() == 0) {
@@ -118,8 +128,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return;
         }
 
-        QuoteSyncJob.syncImmediately(this);
+
     }
+
 
     /**
      * Job: Add stock symbol dialog
@@ -194,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (data.getCount() > 0) {
             error.setVisibility(View.GONE);
             emptyStateView.setVisibility(View.GONE);
-            stocksLastUpdatedDate.setVisibility(View.GONE);
         }
 
         adapter.setCursor(data);
@@ -340,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (networkUp()) {
                     QuoteSyncJob.syncImmediately(activity);
                     floatingActionButton.show();
+                    stocksLastUpdatedDate.setVisibility(View.GONE);
                     Snackbar.make(rootView, getString(R.string.network_restored), Snackbar.LENGTH_SHORT).show();
                 } else {
                     floatingActionButton.hide();
@@ -348,4 +359,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         };
     }
+
+    private void showStockLastUpdatedDate() {
+        stocksLastUpdatedDate.setVisibility(View.VISIBLE);
+
+        ContentResolver contentResolver = getContentResolver();
+        Cursor cursor = contentResolver.query(QuoteContract.Quote.URI, null, null, null, null);
+        List<StockTO> stockTOs = StockCursorHelper.retrieveAllStocks(cursor);
+
+        if (ListUtils.isEmpty(stockTOs)){
+            return;
+        }
+
+        StockTO stockTO = stockTOs.get(0);
+
+
+        Date date = stockTO.getLastUpdated();
+
+
+        SimpleDateFormat formatDate = new SimpleDateFormat("MM/dd/yyyy");
+        String lastUpdated = formatDate.format(date.getTime());
+        String dataSetRange = getString(R.string.as_of_date, lastUpdated);
+        stocksLastUpdatedDate.setText(dataSetRange);
+    }
+
 }

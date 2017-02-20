@@ -27,11 +27,11 @@
                 android:id="@+id/stocks_last_updated_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible"
                 android:layout_margin="@dimen/material_margin"
                 android:gravity="center_horizontal"
-                android:text="as of 12/12/2014" />
+                tools:text="as of 12/12/2014" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
