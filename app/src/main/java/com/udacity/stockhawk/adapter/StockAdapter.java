@@ -68,11 +68,18 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
         cursor.moveToPosition(position);
 
         String stockName = cursor.getString(QuoteContract.Quote.POSITION_NAME);
+        String stockSymbol = cursor.getString(QuoteContract.Quote.POSITION_SYMBOL);
+        String price = dollarFormat.format(cursor.getFloat(QuoteContract.Quote.POSITION_PRICE));
 
-        holder.symbol.setText(cursor.getString(QuoteContract.Quote.POSITION_SYMBOL));
+        holder.symbol.setText(stockSymbol);
+
+        String symbolContentDescription = context.getString(R.string.stockSymbolAdapterContentDesc, stockName, stockSymbol);
+        holder.symbol.setContentDescription(symbolContentDescription);
+
         holder.name.setText(stockName);
-        holder.price.setText(dollarFormat.format(cursor.getFloat(QuoteContract.Quote.POSITION_PRICE)));
-
+        holder.price.setText(price);
+        String closePriceContentDescription = context.getString(R.string.stockClosePriceAdapterContentDesc, price);
+        holder.price.setContentDescription(closePriceContentDescription);
 
         float rawAbsoluteChange = cursor.getFloat(QuoteContract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(QuoteContract.Quote.POSITION_PERCENTAGE_CHANGE);
@@ -85,12 +92,19 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHol
 
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
+        String changeDirection = "";
 
-        if (PreferencesUtils.getDisplayMode(context)
-                .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
+
+
+        if (PreferencesUtils.getDisplayMode(context).equals(context.getString(R.string.pref_display_mode_absolute_key))) {
             holder.change.setText(change);
+            String dollarChangeContentDescription = context.getString(R.string.stockDarllarChangeAdapterContentDesc, change);
+            holder.change.setContentDescription(dollarChangeContentDescription);
+
         } else {
             holder.change.setText(percentage);
+            String percentChangeContentDescription = context.getString(R.string.stockPercentChangeAdapterContentDesc, percentage);
+            holder.change.setContentDescription(percentChangeContentDescription);
         }
     }
 

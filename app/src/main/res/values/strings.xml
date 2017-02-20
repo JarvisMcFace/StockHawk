@@ -59,5 +59,14 @@
     <string name="network_restored">Network restored, updating stocks.</string>
     <string name="as_of_date">as of %1$s</string>
     <string name="enter_valid_stock_symbol">Enter valid stock symbol</string>
+    <string name="stockSymbolAdapterContentDesc">%1$s symbol %2$s</string>
+    <string name="stockClosePriceAdapterContentDesc">close price %1$s</string>
+    <string name="stockDarllarChangeAdapterContentDesc">price change %1$s</string>
+    <string name="stockPercentChangeAdapterContentDesc">percentage change %1$s</string>
+    <string name="contentDescriptionAddStockSymbol">add stock symbol</string>
+    <string name="positive">positive</string>
+    <string name="negative">negative</string>
+    <string name="actionMenuPercentageDese">view by precent change</string>
+    <string name="actionMenuDollarDese">view by price change</string>
 
 </resources>

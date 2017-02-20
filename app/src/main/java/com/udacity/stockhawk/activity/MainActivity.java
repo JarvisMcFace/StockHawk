@@ -322,11 +322,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void setDisplayModeMenuItemIcon(MenuItem item) {
-        if (PreferencesUtils.getDisplayMode(this)
-                .equals(getString(R.string.pref_display_mode_absolute_key))) {
+        if (PreferencesUtils.getDisplayMode(this).equals(getString(R.string.pref_display_mode_absolute_key))) {
             item.setIcon(R.drawable.ic_percentage);
+            String contentDescription = getString(R.string.actionMenuPercentageDese);
+            item.setTitle(contentDescription);
         } else {
+            String contentDescription = getString(R.string.actionMenuDollarDese);
             item.setIcon(R.drawable.ic_dollar);
+            item.setTitle(contentDescription);
         }
     }
 
