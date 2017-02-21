@@ -22,25 +22,24 @@
             android:orientation="vertical">
 
             <TextView
-                android:textDirection="anyRtl"
                 style="@style/Base.TextAppearance.AppCompat.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_margin"
                 android:layout_marginStart="@dimen/material_margin"
-                android:text="@string/symbol"/>
+                android:text="@string/symbol"
+                android:textDirection="anyRtl" />
 
             <TextView
-                android:textDirection="anyRtl"
                 android:id="@+id/textView"
                 style="@style/Base.TextAppearance.AppCompat.Title"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_margin"
                 android:layout_marginStart="@dimen/material_margin"
                 android:layout_marginTop="@dimen/material_small_margin"
                 android:text="@{stockInfo.symbol}"
+                android:textDirection="anyRtl"
                 tools:text="AMD" />
         </LinearLayout>
 
@@ -69,14 +68,12 @@
                 android:textSize="13dp"
                 tools:text="USD" />
 
-
             <ImageView
                 android:id="@+id/price_direction_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/material_small_margin"
                 android:layout_marginStart="@dimen/material_margin"
-                android:contentDescription="ig"
                 android:src="@drawable/ic_arrow_upward"
                 app:stockDirectionArrow="@{stockInfo.change}"
                 tools:ignore="ContentDescription" />
@@ -112,7 +109,6 @@
                 android:layout_height="match_parent" />
 
         </RelativeLayout>
-
 
     </LinearLayout>
 </layout>

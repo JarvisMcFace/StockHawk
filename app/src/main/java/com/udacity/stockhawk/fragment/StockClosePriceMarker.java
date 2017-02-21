@@ -12,10 +12,12 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
 
+import static com.github.mikephil.charting.utils.Utils.formatNumber;
+
 
 /**
  * Custom implementation of the MarkerView.
- * 
+ *
  * @author Philipp Jahoda
  */
 public class StockClosePriceMarker extends MarkerView {
@@ -36,11 +38,11 @@ public class StockClosePriceMarker extends MarkerView {
         if (e instanceof CandleEntry) {
 
             CandleEntry ce = (CandleEntry) e;
-
-            tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
+            String ceHight = formatNumber(ce.getHigh(), 0, true);
+            tvContent.setText(ceHight);
         } else {
-
-            tvContent.setText("" + Utils.formatNumber(e.getY(), 0, true));
+            String entryY = Utils.formatNumber(e.getY(), 0, true);
+            tvContent.setText(entryY);
         }
 
         super.refreshContent(e, highlight);

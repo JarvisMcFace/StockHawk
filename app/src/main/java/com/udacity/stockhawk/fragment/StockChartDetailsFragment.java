@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.fragment;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -27,10 +28,6 @@ import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.databinding.FragmentStockChartDetailsBinding;
 import com.udacity.stockhawk.to.StockTO;
-
-import util.StockDetailsLatestDateComparator;
-import util.StockDetailsMaxPriceComparator;
-
 import com.udacity.stockhawk.ui.XYMarkerView;
 
 import java.text.SimpleDateFormat;
@@ -41,6 +38,8 @@ import java.util.List;
 
 import util.CurrencyAmountAxisValueFormatter;
 import util.RetrieveStockTOFromIntent;
+import util.StockDetailsLatestDateComparator;
+import util.StockDetailsMaxPriceComparator;
 import util.WeeksDateAxisValueFormatter;
 import yahoofinance.histquotes.HistoricalQuote;
 
@@ -115,7 +114,8 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
         IAxisValueFormatter xAxisFormatter = new CurrencyAmountAxisValueFormatter();
         IAxisValueFormatter weekDateAxisValueFormatter = new WeeksDateAxisValueFormatter(fragmentStockChartDetailsBinding.chart, historicalQuotes);
-        XYMarkerView mv = new XYMarkerView(getContext(), historicalQuotes);
+        Context context = getActivity().getApplicationContext();
+        XYMarkerView mv = new XYMarkerView(context, historicalQuotes);
         mv.setChartView(fragmentStockChartDetailsBinding.chart); // For bounds control
         fragmentStockChartDetailsBinding.chart.setMarker(mv); // Set the marker to the chart
 
@@ -196,7 +196,8 @@ public class StockChartDetailsFragment extends Fragment implements OnChartValueS
 
             if (Utils.getSDKInt() >= 18) {
                 // fill drawable only supported on api level 18 and above
-                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fade_red);
+                Context context = getActivity().getApplicationContext();
+                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.fade_red);
                 lineDataSet.setFillDrawable(drawable);
             } else {
                 lineDataSet.setFillColor(Color.BLACK);
