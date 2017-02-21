@@ -8,19 +8,33 @@
     <uses-permission android:name="android.Manifest.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".StockHawkApp"
+        android:name=".application.StockHawkApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.MainActivity">
+
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.StockDetailsActivity"
+            android:label="@string/stock_details_title_activity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.StockChartDetailsActivity"
+            android:label="@string/stock_chart_detail_title_activity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.StockDetailsLandingActivity"
+            android:label="@string/stock_details_title_activity"
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".sync.QuoteIntentService"
@@ -29,13 +43,30 @@
         <provider
             android:name=".data.StockProvider"
             android:authorities="com.udacity.stockhawk"
-            android:exported="false" />
+            android:exported="true" />
 
         <service
             android:name=".sync.QuoteJobService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".service.StockWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver android:name=".widget.StockInfoWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider_stock_info" />
+        </receiver>
+
+
     </application>
 
 </manifest>

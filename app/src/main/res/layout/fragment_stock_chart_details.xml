@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stockInfo"
+            type="com.udacity.stockhawk.to.StockTO" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_margin"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_margin"
+                android:layout_marginStart="@dimen/material_margin"
+                android:text="@string/symbol"
+                android:textDirection="anyRtl" />
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_margin"
+                android:layout_marginStart="@dimen/material_margin"
+                android:layout_marginTop="@dimen/material_small_margin"
+                android:text="@{stockInfo.symbol}"
+                android:textDirection="anyRtl"
+                tools:text="AMD" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/material_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/stock_price"
+                style="@style/Base.TextAppearance.AppCompat.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_small_margin"
+                android:layout_marginStart="@dimen/material_margin"
+                android:textDirection="anyRtl"
+                app:stockPrice="@{stockInfo.price}"
+                tools:text="11.00" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{stockInfo.currency}"
+                android:textDirection="anyRtl"
+                android:textSize="13dp"
+                tools:text="USD" />
+
+            <ImageView
+                android:id="@+id/price_direction_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_small_margin"
+                android:layout_marginStart="@dimen/material_margin"
+                android:src="@drawable/ic_arrow_upward"
+                app:stockDirectionArrow="@{stockInfo.change}"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_margin"
+                android:src="@drawable/ic_arrow_upward"
+                android:textDirection="anyRtl"
+                android:textSize="18sp"
+                app:stockChange="@{stockInfo.change}"
+                tools:text="4.00" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/material_small_margin"
+                android:textDirection="anyRtl"
+                android:textSize="18sp"
+                app:stockChangePercent="@{stockInfo.percentChange}"
+                tools:text="(5.03%)" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/material_margin">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

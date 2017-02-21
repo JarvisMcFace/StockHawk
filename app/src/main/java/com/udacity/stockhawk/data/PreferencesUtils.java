@@ -10,9 +10,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class PrefUtils {
+public final class PreferencesUtils {
 
-    private PrefUtils() {
+    private PreferencesUtils() {
     }
 
     public static Set<String> getStocks(Context context) {
@@ -66,6 +66,21 @@ public final class PrefUtils {
         String defaultValue = context.getString(R.string.pref_display_mode_default);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(key, defaultValue);
+    }
+
+
+    public static void setLastUpdatedDate(Context context, String lastUpdatedDate) {
+        String key = context.getString(R.string.pref_last_updated_date_key);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, lastUpdatedDate);
+        editor.apply();
+    }
+
+    public static String getLastUpdatedDate(Context context) {
+        String key = context.getString(R.string.pref_last_updated_date_key);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(key, "0");
     }
 
     public static void toggleDisplayMode(Context context) {

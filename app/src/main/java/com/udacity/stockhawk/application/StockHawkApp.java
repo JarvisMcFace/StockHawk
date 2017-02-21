@@ -1,6 +1,8 @@
-package com.udacity.stockhawk;
+package com.udacity.stockhawk.application;
 
 import android.app.Application;
+
+import com.udacity.stockhawk.BuildConfig;
 
 import timber.log.Timber;
 
@@ -14,5 +16,7 @@ public class StockHawkApp extends Application {
             Timber.uprootAll();
             Timber.plant(new Timber.DebugTree());
         }
+
+
     }
 }

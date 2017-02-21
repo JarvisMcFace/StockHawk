@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 
-import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
+import com.google.gson.Gson;
+import com.udacity.stockhawk.data.PreferencesUtils;
+import com.udacity.stockhawk.data.QuoteContract;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ public final class QuoteSyncJob {
 
         try {
 
-            Set<String> stockPref = PrefUtils.getStocks(context);
+            Set<String> stockPref = PreferencesUtils.getStocks(context);
             Set<String> stockCopy = new HashSet<>();
             stockCopy.addAll(stockPref);
             String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
@@ -61,20 +63,26 @@ public final class QuoteSyncJob {
                 return;
             }
 
+            Calendar calendar = Calendar.getInstance();
+            String lastUpdatedTime = String.valueOf(calendar.getTimeInMillis());
+
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
             Iterator<String> iterator = stockCopy.iterator();
 
             Timber.d(quotes.toString());
-
-            ArrayList<ContentValues> quoteCVs = new ArrayList<>();
+            ArrayList<ContentValues> quoteContentValues = new ArrayList<>();
 
             while (iterator.hasNext()) {
-                String symbol = iterator.next();
+                String stockSymbol = iterator.next();
 
-
-                Stock stock = quotes.get(symbol);
+                Stock stock = quotes.get(stockSymbol);
                 StockQuote quote = stock.getQuote();
 
+                if (quote.getPrice() == null) {
+                    continue;
+                }
+                final String currency = stock.getCurrency();
+                final String stockName = stock.getName();
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
                 float percentChange = quote.getChangeInPercent().floatValue();
@@ -82,33 +90,21 @@ public final class QuoteSyncJob {
                 // WARNING! Don't request historical data for a stock that doesn't exist!
                 // The request will hang forever X_x
                 List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
+                Gson gson = new Gson();
+                String stockHistoryJson = gson.toJson(history);
+                String dividends = gson.toJson(stock.getDividend());
+                String stats = gson.toJson(stock.getStats());
 
-                StringBuilder historyBuilder = new StringBuilder();
+                ContentValues quoteCV = getContentValues(lastUpdatedTime, stockSymbol, currency, stockName, price, change, percentChange, stockHistoryJson, dividends, stats);
+                quoteContentValues.add(quoteCV);
 
-                for (HistoricalQuote it : history) {
-                    historyBuilder.append(it.getDate().getTimeInMillis());
-                    historyBuilder.append(", ");
-                    historyBuilder.append(it.getClose());
-                    historyBuilder.append("\n");
-                }
-
-                ContentValues quoteCV = new ContentValues();
-                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
-                quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
-                quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-
-                quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
-
-                quoteCVs.add(quoteCV);
-
+                updateLastUpdateDate(context, lastUpdatedTime);
             }
 
             context.getContentResolver()
                     .bulkInsert(
-                            Contract.Quote.URI,
-                            quoteCVs.toArray(new ContentValues[quoteCVs.size()]));
+                            QuoteContract.Quote.URI,
+                            quoteContentValues.toArray(new ContentValues[quoteContentValues.size()]));
 
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
@@ -118,20 +114,35 @@ public final class QuoteSyncJob {
         }
     }
 
+    @NonNull
+    private static ContentValues getContentValues(String lastUpdatedTime, String stockSymbol, String currency, String stockName, float price, float change, float percentChange, String stockHistoryJson, String dividends, String stats) {
+        ContentValues quoteCV = new ContentValues();
+        quoteCV.put(QuoteContract.Quote.COLUMN_SYMBOL, stockSymbol);
+        quoteCV.put(QuoteContract.Quote.COLUMN_PRICE, price);
+        quoteCV.put(QuoteContract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
+        quoteCV.put(QuoteContract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
+        quoteCV.put(QuoteContract.Quote.COLUMN_HISTORY, stockHistoryJson.toString());
+        quoteCV.put(QuoteContract.Quote.COLUMN_NAME, stockName);
+        quoteCV.put(QuoteContract.Quote.COLUMN_DIVIDEND, dividends);
+        quoteCV.put(QuoteContract.Quote.COLUMN_STATS, stats);
+        quoteCV.put(QuoteContract.Quote.COLUMN_CURRENCY, currency);
+        quoteCV.put(QuoteContract.Quote.COLUMN_LAST_UPDATED, lastUpdatedTime);
+        return quoteCV;
+    }
+
+    private static void updateLastUpdateDate(Context context, String lastUpdatedTime) {
+        PreferencesUtils.setLastUpdatedDate(context, lastUpdatedTime);
+    }
+
     private static void schedulePeriodic(Context context) {
         Timber.d("Scheduling a periodic task");
 
-
         JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
-
-
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(PERIOD)
                 .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 
-
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
         scheduler.schedule(builder.build());
     }
 
@@ -145,9 +156,9 @@ public final class QuoteSyncJob {
 
     public static synchronized void syncImmediately(Context context) {
 
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
         if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
             Intent nowIntent = new Intent(context, QuoteIntentService.class);
             context.startService(nowIntent);
@@ -155,18 +166,10 @@ public final class QuoteSyncJob {
 
             JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
 
-
-            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
-
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 
             JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
             scheduler.schedule(builder.build());
-
-
         }
     }
-
-
 }

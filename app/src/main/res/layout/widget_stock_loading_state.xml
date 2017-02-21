@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="160dp"
+    android:layout_height="140dp"
+    android:layout_gravity="center"
+    android:background="@color/translucent_black"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+
+            android:id="@+id/widget_stack_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/widget_stock_name"
+                style="@style/WidgetTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/material_space"
+                android:layout_marginLeft="@dimen/material_small_margin"
+                android:layout_marginRight="@dimen/material_small_margin"
+                android:gravity="center"
+                android:textDirection="anyRtl"
+                tools:text="@string/loading_stocks" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/material_small_margin"
+            android:alpha=".07"
+            android:background="@drawable/sales_icon" />
+    </RelativeLayout>
+</LinearLayout>

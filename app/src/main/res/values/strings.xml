@@ -5,6 +5,7 @@
 
     <string name="pref_stocks_key">stocks</string>
 
+    <string name="pref_last_updated_date_key">lastUpdatedDate</string>
 
     <string name="pref_display_mode_key">displayMode</string>
     <string name="pref_display_mode_default">@string/pref_display_mode_percentage_key</string>
@@ -12,24 +13,60 @@
     <string name="pref_display_mode_absolute_key">absolute</string>
     <string name="pref_display_mode_percentage_key">percentage</string>
 
-    <string name="default_stocks_yahoo">YHOO</string>
-    <string name="default_stocks_apple">AAPL</string>
-    <string name="default_stocks_microsoft">MSFT</string>
-    <string name="default_stocks_facebook">FB</string>
+    <string name="default_stocks_yahoo" translatable="false">YHOO</string>
+    <string name="default_stocks_apple" translatable="false">AAPL</string>
+    <string name="default_stocks_microsoft" translatable="false">MSFT</string>
+    <string name="default_stocks_facebook" translatable="false">FB</string>
 
 
-    <string name="action_change_units">@string/pref_display_mode_key</string>
+    <string name="action_change_units" translatable="false">@string/pref_display_mode_key</string>
 
 
     <string name="dialog_title">Add Stock</string>
     <string name="dialog_hint">Symbol (e.g. GOOG)</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_add">Add</string>
+    <string name="dialog_add_symbol">Add symbol</string>
+
 
     <string name="error_no_network">No network connectivity! Will load stock cursor when the network is available.</string>
     <string name="error_no_stocks">No stocks added! Hit the floating action button to add one.</string>
 
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
+    <string name="no_connectivity">No network connection.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
+    <string name="symbol_not_available">Symbol %s is not available</string>
+    <string name="stock_details_title_activity">Stock Details</string>
+    <string name="stock_chart_detail_title_activity">Stock Chart Detail</string>
+    <string name="max_close_price">Max close price</string>
+    <string name="data_set_range_description" translatable="false">%1$s - %2$s</string>
+    <string name="details_chart">Chart</string>
+    <string name="opening_price">Opening Price:</string>
+    <string name="closing_price">Closing Price:</string>
+    <string name="adjusted_close">Adjusted Close</string>
+    <string name="history_high">High</string>
+    <string name="history_low">Low</string>
+    <string name="history_volume">Volume</string>
+    <string name="details_history">History</string>
+    <string name="not_available">n/a</string>
+    <string name="symbol">symbol</string>
+    <string name="week_eneding">From:</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="stocks_empty_state_text">No stocks go add some&#8230;</string>
+    <string name="loading_stocks">loading stocks</string>
+    <string name="retry">retry</string>
+    <string name="network_restored">Network restored, updating stocks.</string>
+    <string name="as_of_date">as of %1$s</string>
+    <string name="enter_valid_stock_symbol">Enter valid stock symbol</string>
+    <string name="stockSymbolAdapterContentDesc">%1$s symbol %2$s</string>
+    <string name="stockClosePriceAdapterContentDesc">close price %1$s</string>
+    <string name="stockDarllarChangeAdapterContentDesc">price change %1$s</string>
+    <string name="stockPercentChangeAdapterContentDesc">percentage change %1$s</string>
+    <string name="contentDescriptionAddStockSymbol">add stock symbol</string>
+    <string name="positive">positive</string>
+    <string name="negative">negative</string>
+    <string name="actionMenuPercentageDese">view by precent change</string>
+    <string name="actionMenuDollarDese">view by price change</string>
 
 </resources>
