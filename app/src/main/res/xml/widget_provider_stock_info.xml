@@ -4,7 +4,7 @@
     android:initialLayout="@layout/widget_stock_info_stack"
     android:minHeight="@dimen/widget_stock_history_min_height"
     android:minWidth="@dimen/widget_stock_history_min_width"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/stock_widget"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
     android:widgetCategory="home_screen">
