@@ -13,13 +13,13 @@
     <string name="pref_display_mode_absolute_key">absolute</string>
     <string name="pref_display_mode_percentage_key">percentage</string>
 
-    <string name="default_stocks_yahoo">YHOO</string>
-    <string name="default_stocks_apple">AAPL</string>
-    <string name="default_stocks_microsoft">MSFT</string>
-    <string name="default_stocks_facebook">FB</string>
+    <string name="default_stocks_yahoo" translatable="false">YHOO</string>
+    <string name="default_stocks_apple" translatable="false">AAPL</string>
+    <string name="default_stocks_microsoft" translatable="false">MSFT</string>
+    <string name="default_stocks_facebook" translatable="false">FB</string>
 
 
-    <string name="action_change_units">@string/pref_display_mode_key</string>
+    <string name="action_change_units" translatable="false">@string/pref_display_mode_key</string>
 
 
     <string name="dialog_title">Add Stock</string>
@@ -39,7 +39,7 @@
     <string name="stock_details_title_activity">Stock Details</string>
     <string name="stock_chart_detail_title_activity">Stock Chart Detail</string>
     <string name="max_close_price">Max close price</string>
-    <string name="data_set_range_description">%1$s - %2$s</string>
+    <string name="data_set_range_description" translatable="false">%1$s - %2$s</string>
     <string name="details_chart">Chart</string>
     <string name="opening_price">Opening Price:</string>
     <string name="closing_price">Closing Price:</string>
