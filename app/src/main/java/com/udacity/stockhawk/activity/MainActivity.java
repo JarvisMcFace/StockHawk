@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,13 +27,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputType;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.adapter.StockAdapter;
@@ -134,20 +138,54 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     public void addStockButton(View view) {
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(R.string.dialog_title)
-                .content(R.string.dialog_add_symbol)
+                .customView(R.layout.add_stock_dialog, true)
                 .positiveText(R.string.dialog_add)
-                .input(R.string.dialog_hint, R.string.dialog_hint, false, null)
-                .inputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS | InputType.TYPE_CLASS_TEXT)
-                .inputRange(1, 5)
-                .input(R.string.dialog_hint, 0, new MaterialDialog.InputCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onInput(MaterialDialog dialog, CharSequence input) {
-                        performAdd(input);
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        EditText stockInput = (EditText) dialog.getContentView().findViewById(R.id.dialog_stock);
+                        performAdd(stockInput.getText().toString());
                     }
                 })
-                .show();
+                .build();
+
+        final View positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+        final EditText stockInput = (EditText) dialog.getCustomView().findViewById(R.id.dialog_stock);
+        positiveAction.setEnabled(false);
+        stockInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String addStock = s.toString();
+                int stockInputLength = addStock.length();
+                if (isValidInput(addStock) && stockInputLength > 0) {
+                    positiveAction.setEnabled(true);
+                    stockInput.setError(null);
+                } else {
+                    positiveAction.setEnabled(false);
+                    stockInput.setError(getString(R.string.invalid_char));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    stockInput.setError(null);
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    public boolean isValidInput(String s) {
+        String pattern = "^[a-zA-Z]*$";
+        return s.matches(pattern);
     }
 
     private void performAdd(CharSequence input) {

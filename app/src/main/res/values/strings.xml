@@ -68,5 +68,6 @@
     <string name="negative">negative</string>
     <string name="actionMenuPercentageDese">view by precent change</string>
     <string name="actionMenuDollarDese">view by price change</string>
+    <string name="invalid_char">Invalid character</string>
 
 </resources>
